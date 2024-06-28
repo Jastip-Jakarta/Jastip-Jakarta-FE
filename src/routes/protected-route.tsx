@@ -5,12 +5,19 @@ const ProtectedRoute = () => {
   const { pathname } = useLocation();
   const { token } = useAuth();
 
+  const isAuthenticated = ["/orders", "/order"];
+
   if (pathname === "/") {
     if (token) {
-      return <Navigate to="/order" />;
+      return <Navigate to="/orders" />;
     }
   }
 
+  if (isAuthenticated.some((path) => pathname.startsWith(path))) {
+    if (!token) {
+      return <Navigate to={"/"} />;
+    }
+  }
   return <Outlet />;
 };
 

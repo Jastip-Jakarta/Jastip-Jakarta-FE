@@ -1,12 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ILoginType, LoginSchema } from "@/utils/apis/auth/types";
@@ -17,6 +9,7 @@ import toast from "react-hot-toast";
 import { Login as LoginAction } from "@/utils/apis/auth/api";
 import { useAuth } from "@/utils/context/auth";
 import { Navigate } from "react-router-dom";
+import { Modal } from "@/components/Modal";
 
 const Login: FC<PropsWithChildren> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,14 +33,12 @@ const Login: FC<PropsWithChildren> = ({ children }) => {
     }
   });
   return (
-    <Dialog open={isOpen} onOpenChange={(v) => setIsOpen(v)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogDescription className="py-3 text-start">
-            Kalau kamu sudah mempunyai akun JASTIP Jakarta silahkan login.{" "}
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <button onClick={() => setIsOpen(true)}>{children}</button>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <p className="text-base pb-6 text-slate-500 ">
+          Kalau kamu sudah mempunyai akun JASTIP Jakarta silahkan login.
+        </p>
         <form onSubmit={onSumbitLogin}>
           <div className="grid gap-4">
             <div className="grid grid-rows-1 items-center justify-items-start gap-4">
@@ -66,10 +57,13 @@ const Login: FC<PropsWithChildren> = ({ children }) => {
               ) : null}
             </div>
           </div>
-          <DialogFooter className="!flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Button type="submit" disabled={isSubmitting}>
               Masuk
             </Button>
+            <span className="text-sm py-2 font-medium hover:underline underline-offset-2 cursor-pointer text-slate-600">
+              Lupa Sandi?
+            </span>
             <p className="text-sm">
               kalau kamu belum memiliki akun silahkan daftar disini{" "}
               <span
@@ -79,10 +73,10 @@ const Login: FC<PropsWithChildren> = ({ children }) => {
                 disini
               </span>
             </p>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </Modal>
+    </>
   );
 };
 

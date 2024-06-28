@@ -1,12 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IRegisterType, RegisterSchema } from "@/utils/apis/auth/types";
@@ -15,6 +7,7 @@ import { FC, PropsWithChildren, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Register as RegisterAction } from "@/utils/apis/auth/api";
 import toast from "react-hot-toast";
+import { Modal } from "@/components/Modal";
 
 const Register: FC<PropsWithChildren> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,14 +27,12 @@ const Register: FC<PropsWithChildren> = ({ children }) => {
     }
   });
   return (
-    <Dialog open={isOpen} onOpenChange={(v) => setIsOpen(v)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogDescription className="py-3 text-start">
-            Sebelum menggunakan JASTIP Jakarta kamu harus mendaftar dulu yah!{" "}
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <button onClick={() => setIsOpen(true)}>{children}</button>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <p className="text-base pb-6 text-slate-500 ">
+          Sebelum menggunakan JASTIP Jakarta kamu harus mendaftar dulu yah!
+        </p>
         <form onSubmit={onSumbitRegister}>
           <div className="grid gap-4">
             <div className="grid grid-rows-1 items-center justify-items-start gap-4">
@@ -81,7 +72,7 @@ const Register: FC<PropsWithChildren> = ({ children }) => {
               ) : null}
             </div>
           </div>
-          <DialogFooter className="!flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Button disabled={isSubmitting} type="submit">
               {isSubmitting ? "loading" : "Daftar"}
             </Button>
@@ -94,10 +85,10 @@ const Register: FC<PropsWithChildren> = ({ children }) => {
                 disini
               </span>
             </p>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </Modal>
+    </>
   );
 };
 

@@ -1,11 +1,9 @@
-import { Code, Package2, ShieldQuestion, Smile } from "lucide-react";
-import { ModalAction } from "../types/modal";
+import { Code, LogOut, Package2, ShieldQuestion, Smile } from "lucide-react";
 
 export const SIDEBAR = [
   {
     title: "Profile saya",
     icon: ({ className }: any) => <Smile className={className} />,
-    action: { type: "OPEN_EDIT_PROFILE" } as ModalAction,
   },
   {
     title: "Orderan saya",
@@ -18,5 +16,10 @@ export const SIDEBAR = [
   {
     title: "Cara JASTIP",
     icon: ({ className }: any) => <ShieldQuestion className={className} />,
+  },
+  ,
+  {
+    title: "Keluar",
+    icon: ({ className }: any) => <LogOut className={className} />,
   },
 ];

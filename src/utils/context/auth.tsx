@@ -8,12 +8,14 @@ interface AuthState {
   token: string;
   user: Partial<IUser>;
   changeToken(token?: string): void;
+  fetchUser: () => void;
 }
 
 const initialState: AuthState = {
   token: "",
   user: {},
   changeToken: () => {},
+  fetchUser() {},
 };
 
 const AuthContext = createContext(initialState);
@@ -60,6 +62,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     token,
     user,
     changeToken,
+    fetchUser,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

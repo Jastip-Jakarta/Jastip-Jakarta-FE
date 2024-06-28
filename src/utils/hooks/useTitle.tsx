@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function useTitle() {
+  const [title, setTitle] = useState("");
+
   const changeTitle = (newTitle: string) => {
-    document.title = newTitle;
+    setTitle(newTitle);
   };
 
   useEffect(() => {
+    document.title = title;
     return () => {
       document.title = "Jastip Jakarta";
     };

@@ -10,6 +10,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-button p-3 rounded-xl text-white hover:bg-button/90",
+        "status-1": "bg-[#8C98A9] text-primary-foreground hover:bg-[#8C98A9]/90",
+        "status-2": "bg-[#4677C0] text-primary-foreground hover:bg-[#4677C0]/90",
+        "status-3": "bg-[#0065FD] text-primary-foreground hover:bg-[#0065FD]/90",
+        "status-4": "bg-[#07AEB9] text-primary-foreground hover:bg-[#07AEB9]/90",
+        "status-5": "bg-[#17B114] text-primary-foreground hover:bg-[#17B114]/90",
+        "status-6": "bg-[#FF0000] text-primary-foreground hover:bg-[#FF0000]/90",
         primary: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
@@ -19,6 +25,7 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-10 px-4 py-2",
+        xs: "h-[33px] rounded-md px-4",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",

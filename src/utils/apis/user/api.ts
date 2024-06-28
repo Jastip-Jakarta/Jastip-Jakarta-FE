@@ -19,3 +19,14 @@ export const editUser = async (body: Partial<IEditUserType>) => {
     throw Error(error.response.data.message);
   }
 };
+
+export const updateProfileUser = async (body: { image?: any }) => {
+  try {
+    const formData = new FormData();
+    formData.append("photo_profile", body.image);
+    const response = await axiosWithConfig.put("/users/profile", formData);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
