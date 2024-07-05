@@ -14,6 +14,19 @@ export const Login = async (body: ILoginType) => {
   }
 };
 
+export const LoginAdmin = async (body: ILoginType) => {
+  try {
+    const response = await axiosWithConfig.post("/admin/login", body);
+    return response.data as Response<{
+      nama: string;
+      role: string;
+      token: string;
+    }>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
 export const Register = async (body: IRegisterType) => {
   try {
     const response = await axiosWithConfig.post("/users/register", body);

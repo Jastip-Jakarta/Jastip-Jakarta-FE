@@ -1,12 +1,11 @@
 import { IOrders, IOrdersProcessItem } from "@/utils/apis/order/types";
 import { Button } from "./ui/button";
-import { Info } from "lucide-react";
-
+import InfoStatus from "./InfoStatus";
 interface ICardProps {
   order?: IOrders;
   orderProcess?: IOrdersProcessItem;
   regionCodeOrderProcess?: string;
-  onActionSelengkapnya: () => void;
+  onActionSelengkapnya?: () => void;
 }
 const Card = ({
   order,
@@ -35,24 +34,14 @@ const Card = ({
       </div>
       <div className="w-1/2 flex flex-col justify-between">
         <div className="w-full space-y-1 ">
-          <h3 className="font-bold text-sm uppercase">Status</h3>
-          <div className="flex items-center gap-2">
-            <Button
-              size={"sm"}
-              disabled
-              variant={"secondary"}
-              className="uppercase !text-[11px] !font-bold max-w-36 rounded-full disabled:opacity-100"
-            >
-              {order ? order.status : orderProcess?.status}
-            </Button>
-            <Info className="size-6 flex-shrink-0" />
-          </div>
-          <p className="text-xs italic">Admin Jakarta sedang menunggu paket kamu</p>
+          <InfoStatus statusOrder={order ? order.status : orderProcess?.status} />
         </div>
         <div className="w-full space-y-2">
           <div className="flex flex-col">
             <span className="font-bold text-sm">Nomor Resi Jastip</span>
-            <span>{orderProcess ? orderProcess.tracking_number_jastip : "-"}</span>
+            <span className="text-sm">
+              {orderProcess ? orderProcess.tracking_number_jastip : "-"}
+            </span>
           </div>
           <Button size={"sm"} className="w-full rounded-full h-8" onClick={onActionSelengkapnya}>
             Lihat selengkapnya

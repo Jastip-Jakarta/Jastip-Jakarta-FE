@@ -13,7 +13,6 @@ import Loading from "./Loading";
 const EditProfile = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const { user, fetchUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -50,35 +49,55 @@ const EditProfile = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
         <h3 className="text-2xl font-semibold ">Edit Profile</h3>
         <div className="flex flex-col gap-1">
           <Label>Nama</Label>
-          <Input {...register("name")} />
+          <Input
+            {...register("name")}
+            disabled={user.role ? true : false}
+            className="disabled:opacity-100"
+          />
           {errors.name ? <p className="text-sm text-red-500 -mt-2">{errors.name.message}</p> : null}
         </div>
         <div className="flex flex-col gap-1">
           <Label>Email</Label>
-          <Input {...register("email")} />
+          <Input
+            {...register("email")}
+            disabled={user.role ? true : false}
+            className="disabled:opacity-100"
+          />
           {errors.email ? (
             <p className="text-sm text-red-500 -mt-2">{errors.email.message}</p>
           ) : null}
         </div>
         <div className="flex flex-col gap-1">
           <Label>Nomor whatsapp</Label>
-          <Input {...register("phone")} />
+          <Input
+            {...register("phone")}
+            disabled={user.role ? true : false}
+            className="disabled:opacity-100"
+          />
           {errors.phone ? (
             <p className="text-sm text-red-500 -mt-2">{errors.phone.message}</p>
           ) : null}
         </div>
-        <div className="flex justify-end space-x-8">
-          <Button
-            className="bg-slate-500 text-sm w-20 hover:bg-slate-400"
-            size={"sm"}
-            onClick={onClose}
-            type="button"
-          >
-            Batal
-          </Button>
-          <Button type="submit" className="text-sm w-20" size={"sm"} disabled={isSubmitting}>
-            Simpan
-          </Button>
+        <div className={`flex justify-end space-x-8 `}>
+          {user.role ? (
+            <Button type="button" onClick={onClose}>
+              Kembali
+            </Button>
+          ) : (
+            <>
+              <Button
+                className="bg-slate-500 text-sm w-20 hover:bg-slate-400"
+                size={"sm"}
+                onClick={onClose}
+                type="button"
+              >
+                Batal
+              </Button>
+              <Button type="submit" className="text-sm w-20" size={"sm"} disabled={isSubmitting}>
+                Simpan
+              </Button>
+            </>
+          )}
         </div>
       </form>
     </>

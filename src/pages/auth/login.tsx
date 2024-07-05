@@ -10,11 +10,12 @@ import { Login as LoginAction } from "@/utils/apis/auth/api";
 import { useAuth } from "@/utils/context/auth";
 import { Navigate } from "react-router-dom";
 import { Modal } from "@/components/Modal";
+import InputPassword from "@/components/InputPassword";
 
-const Login: FC<PropsWithChildren> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Login: FC<{ onClose: () => void }> = ({ onClose }) => {
+  const [passwordHide, setPasswordHide] = useState(true);
+  // const [isOpen, setIsOpen] = useState(false);
   const { changeToken } = useAuth();
-
   const {
     register,
     handleSubmit,
@@ -26,7 +27,7 @@ const Login: FC<PropsWithChildren> = ({ children }) => {
       const result = await LoginAction(body);
       changeToken(result.data.token);
       toast.success(result.message);
-      setIsOpen(false);
+      onClose();
       <Navigate to={"/order"} />;
     } catch (error: any) {
       toast.error(error.message);
@@ -34,48 +35,45 @@ const Login: FC<PropsWithChildren> = ({ children }) => {
   });
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>{children}</button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <p className="text-base pb-6 text-slate-500 ">
-          Kalau kamu sudah mempunyai akun JASTIP Jakarta silahkan login.
-        </p>
-        <form onSubmit={onSumbitLogin}>
-          <div className="grid gap-4">
-            <div className="grid grid-rows-1 items-center justify-items-start gap-4">
-              <Label htmlFor="email_no_wa">Email / Nomor Whatsapp</Label>
-              <Input id="email_no_wa" className="col-span-3" {...register("email_or_phone")} />
-              {errors.email_or_phone ? (
-                <p className="text-sm text-red-500 -mt-2">{errors.email_or_phone.message}</p>
-              ) : null}
-            </div>
+      <p className="text-base pb-6 text-slate-500 ">
+        Kalau kamu sudah mempunyai akun JASTIP Jakarta silahkan login.
+      </p>
+      <form onSubmit={onSumbitLogin} className="space-y-4">
+        <div className="grid gap-4">
+          <div className="grid grid-rows-1 items-center justify-items-start gap-2">
+            <Label htmlFor="email_no_wa">Email / Nomor Whatsapp</Label>
+            <Input id="email_no_wa" className="col-span-3" {...register("email_or_phone")} />
+            {errors.email_or_phone ? (
+              <p className="text-sm text-red-500 -mt-2">{errors.email_or_phone.message}</p>
+            ) : null}
+          </div>
 
-            <div className="grid grid-rows-1 items-center justify-items-start gap-4">
-              <Label htmlFor="kata-sandi">Kata Sandi</Label>
-              <Input id="kata-sandi" className="col-span-3" {...register("password")} />
-              {errors.password ? (
-                <p className="text-sm text-red-500 -mt-2 mb-2">{errors.password.message}</p>
-              ) : null}
-            </div>
+          <div className="grid grid-rows-1 items-center justify-items-start gap-2">
+            <Label htmlFor="kata-sandi">Kata Sandi</Label>
+            <InputPassword hide={passwordHide} onHide={setPasswordHide} register={register} />
+            {errors.password ? (
+              <p className="text-sm text-red-500 -mt-2 mb-2">{errors.password.message}</p>
+            ) : null}
           </div>
-          <div className="flex flex-col gap-2">
-            <Button type="submit" disabled={isSubmitting}>
-              Masuk
-            </Button>
-            <span className="text-sm py-2 font-medium hover:underline underline-offset-2 cursor-pointer text-slate-600">
-              Lupa Sandi?
+        </div>
+        <div className="flex flex-col gap-2">
+          <Button type="submit" disabled={isSubmitting}>
+            Masuk
+          </Button>
+          <span className="text-sm py-2 font-medium hover:underline underline-offset-2 cursor-pointer text-slate-600">
+            Lupa Sandi?
+          </span>
+          <p className="text-sm">
+            kalau kamu belum memiliki akun silahkan daftar disini{" "}
+            <span
+              className="font-bold underline underline-offset-4 cursor-pointer"
+              onClick={onClose}
+            >
+              disini
             </span>
-            <p className="text-sm">
-              kalau kamu belum memiliki akun silahkan daftar disini{" "}
-              <span
-                className="font-bold underline underline-offset-4 cursor-pointer"
-                onClick={() => setIsOpen(false)}
-              >
-                disini
-              </span>
-            </p>
-          </div>
-        </form>
-      </Modal>
+          </p>
+        </div>
+      </form>
     </>
   );
 };

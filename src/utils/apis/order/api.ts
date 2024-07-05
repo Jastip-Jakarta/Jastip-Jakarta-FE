@@ -1,11 +1,20 @@
 import { Response } from "@/utils/types/api";
 import axiosWithConfig from "../axios-with-config";
-import { IOrders, IOrdersProcess, IOrderType } from "./types";
+import { IOrderAdminJakartaType, IOrders, IOrdersProcess, IOrderType } from "./types";
 
 export const createOrder = async (body: IOrderType) => {
   try {
     const response = await axiosWithConfig.post("/users/order", body);
     return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const searchUserOrders = async (keyword: string) => {
+  try {
+    const response = await axiosWithConfig.get(`/users/order/search?item_name=${keyword}`);
+    return response.data as Response<IOrders[]>;
   } catch (error: any) {
     throw Error(error.response.data.message);
   }
@@ -41,6 +50,14 @@ export const getOrder = async (orderId: string) => {
 export const updateOrder = async (orderId: string, body: IOrderType) => {
   try {
     const response = await axiosWithConfig.put("/users/order/" + orderId, body);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+export const updateOrderByAdminJakarta = async (orderId: string, body: IOrderAdminJakartaType) => {
+  try {
+    const response = await axiosWithConfig.post("/admin/order/" + orderId, body);
     return response.data as Response<{}>;
   } catch (error: any) {
     throw Error(error.response.data.message);

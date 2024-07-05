@@ -7,7 +7,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <div className="relative max-w-[500px]  flex flex-col mx-auto bg-[#FDEACA] min-h-screen ">
+      <div className={`relative max-w-[500px] flex flex-col mx-auto bg-[#FDEACA] min-h-screen`}>
         <Navbar openSidebar={() => setIsOpenSidebar(true)} />
         <Sidebar isOpen={isOpenSidebar} setIsOpen={setIsOpenSidebar} />
         {children}

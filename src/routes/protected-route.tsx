@@ -3,19 +3,31 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const { pathname } = useLocation();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
-  const isAuthenticated = ["/orders", "/order"];
+  const protectedByToken = ["/orders", "/order"];
+  const adminSProtected = ["/admin/orders", "/admin/dashboard", "/admin/region-code"];
 
-  if (pathname === "/") {
+  // KETIKA SUDAH LOGIN
+  if (pathname === "/" || pathname === "/admin/login") {
     if (token) {
       return <Navigate to="/orders" />;
     }
   }
 
-  if (isAuthenticated.some((path) => pathname.startsWith(path))) {
+  // KETIKA BELUM LOGIN
+  if (protectedByToken.some((path) => pathname.startsWith(path))) {
     if (!token) {
       return <Navigate to={"/"} />;
+    }
+  }
+
+  if (adminSProtected.some((path) => pathname.startsWith(path))) {
+    if (!token) {
+      return <Navigate to={"/admin/login"} />;
+    }
+    if (user.role !== "Super") {
+      return <Navigate to={"/orders"} />;
     }
   }
   return <Outlet />;

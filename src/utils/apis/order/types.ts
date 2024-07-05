@@ -18,13 +18,25 @@ export const orderSchema = z.object({
         return z.NEVER;
       }
       return parsed;
-    }),
+    })
+    .or(z.number())
+    .refine((value) => `${value}`.startsWith("62"), { message: "Nomor whatsapp tidak valid" })
+    .refine((value) => `${value}`.length <= 13, { message: "Nomor whatsapp tidak valid" }),
   code: z.enum([...OPTIONS.kodeWilayah], {
     message: "Masukkan kode wilayah anda",
   }),
 });
 
 export type IOrderType = z.infer<typeof orderSchema>;
+
+export const orderSchemaAdminJakarta = z.object({
+  status: z.string().optional(),
+  weight_item: z.number(),
+  delivery_batch: z.string(),
+  tracking_number_jastip: z.string(),
+});
+
+export type IOrderAdminJakartaType = z.infer<typeof orderSchemaAdminJakarta>;
 
 export interface IOrders {
   order_id: number;
@@ -43,12 +55,15 @@ export interface IOrders {
 
 export interface IOrdersProcess {
   code: string;
-  region: string;
+  delivery_batch: string;
   estimasi: string;
-  total_order: number;
-  total_weight: number;
-  total_price: number;
   orders: IOrdersProcessItem[];
+  package_received_photo: string;
+  package_wrapped_photo: string;
+  region: string;
+  total_order: number;
+  total_price: number;
+  total_weight: number;
 }
 export interface IOrdersProcessItem {
   order_id: number;

@@ -3,6 +3,7 @@ import { IUser } from "../apis/user/types";
 import axiosWithConfig, { setAxiosConfig } from "../apis/axios-with-config";
 import { getUser } from "../apis/user/api";
 import toast from "react-hot-toast";
+import { getProfileAdmin } from "../apis/admin/api";
 
 interface AuthState {
   token: string;
@@ -33,7 +34,8 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     (res) => res,
     (error) => {
       if (error.response.status === 401) {
-        console.log("Silahkan Login kembali");
+        alert("Silahkan Login kembali");
+        changeToken("");
       }
       return Promise.reject(error);
     }
@@ -41,7 +43,8 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const result = await getUser();
+      const role = localStorage.getItem("role");
+      const result = await (!role ? getUser() : getProfileAdmin());
       setUser(result.data);
     } catch (error: any) {
       toast.error(error.message);
@@ -55,6 +58,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       localStorage.setItem("token", newToken);
     } else {
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
       setUser({});
     }
   };

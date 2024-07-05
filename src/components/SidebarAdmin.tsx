@@ -1,4 +1,4 @@
-import { SIDEBAR, SIDEBAR_ADMIN } from "@/utils/constants/sidebar";
+import { SIDEBAR_ADMIN_SUPER } from "@/utils/constants/sidebar";
 import { useAuth } from "@/utils/context/auth";
 import { Pencil, X } from "lucide-react";
 import EditProfile from "./EditProfile";
@@ -13,7 +13,7 @@ interface SidebarProps {
   setIsOpen(value: boolean): void;
 }
 
-const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
   const navigate = useNavigate();
   const { user, changeToken } = useAuth();
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
@@ -21,11 +21,11 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
 
   const onUpdateImage = async (e: any) => {
     setIsLoadingUpload(true);
-    const isAdmin = localStorage.getItem("role");
+
     try {
       const result = await updateProfileUser({
         image: e.target.files[0],
-        isAdmin: isAdmin ? true : false,
+        isAdmin: true,
       });
       toast.success(result.message);
     } catch (error: any) {
@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     <>
       {isLoadingUpload ? <Loading /> : null}
       <div
-        className={"fixed inset-0 z-50 bg-slate-100 duration-200"}
+        className={"bg-slate-100 duration-200 h-screen max-w-sm"}
         style={{
           width: `${isOpen ? "100" : "0"}%`,
         }}
@@ -57,7 +57,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         <div
           className={`${
             isOpen ? "block" : "hidden"
-          } flex flex-col items-center justify-center min-h-full gap-10 `}
+          } flex flex-col items-center justify-center min-h-full gap-10 relative`}
         >
           <X className="absolute top-4 right-4 size-8 cursor-pointer" onClick={onCloseSidebar} />
           <div className="flex flex-col items-center gap-5 ">
@@ -84,7 +84,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
               <EditProfile isOpen={isOpenEditProfile} onClose={() => setIsOpenEditProfile(false)} />
             ) : (
               <>
-                {(user.role ? SIDEBAR_ADMIN : SIDEBAR).map((value) => {
+                {SIDEBAR_ADMIN_SUPER.map((value) => {
                   return (
                     <div
                       key={value?.title}
@@ -94,7 +94,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                           case "Keluar":
                             onLogout();
                             break;
-                          case "Profile saya":
+                          case "Admin":
                             setIsOpenEditProfile(true);
                             break;
                           case "Orderan saya":
@@ -102,7 +102,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                             setIsOpen(false);
                             break;
                           case "Orderan jastip":
-                            navigate("/orders");
+                            navigate("/admin/orders");
                             setIsOpen(false);
                             break;
                           case "Kode wilayah":
@@ -128,4 +128,4 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   );
 };
 
-export default Sidebar;
+export default SidebarAdmin;

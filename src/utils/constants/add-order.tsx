@@ -33,7 +33,7 @@ export const FORM_ORDER = [
     label: "Nomor Whatsapp",
     formName: "whatsapp_number",
     placeholder: "nomor whatsapp kamu",
-    msg: "Pastikan kamu menulis nomor whatsapp dengan benar dengan format +62",
+    msg: "Pastikan kamu menulis nomor whatsapp dengan benar, contoh : 62xxxxxxxx",
   },
   {
     label: "Kode Wilayah",
@@ -41,5 +41,23 @@ export const FORM_ORDER = [
     placeholder: "pilih kode wilayah kamu",
     msg: "Silahkan pilih kode wilayah tempat yang akan kamu akan ambil titipan mu. Untuk keterangan kode wilayah silahkan klik",
     options: OPTIONS.kodeWilayah,
+  },
+];
+
+export const FORM_ORDER_ADMIN_JAKARTA = [
+  {
+    label: "Berat Barang",
+    formName: "weight_item",
+    placeholder: "berat barang",
+  },
+  {
+    label: "Batch Pengiriman",
+    formName: "delivery_batch",
+    placeholder: "batch pengiriman",
+  },
+  {
+    label: "Nomor Resi JASTIP",
+    formName: "tracking_number_jastip",
+    placeholder: "nomor resi jastip",
   },
 ];
