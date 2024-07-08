@@ -79,7 +79,10 @@ const AddOrder = () => {
                   {!form.options ? (
                     <>
                       <Label>{form.label}</Label>
-                      <Input placeholder={form.placeholder} {...register(form.formName as any)} />
+                      <Input
+                        placeholder={form.placeholder}
+                        {...register(form.formName as keyof typeof register)}
+                      />
                       {errors?.[form.formName as keyof typeof errors] ? (
                         <p className="text-sm text-red-500 -mt-2">
                           {errors?.[form.formName as keyof typeof errors]?.message?.toString()}

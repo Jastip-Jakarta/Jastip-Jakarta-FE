@@ -5,8 +5,9 @@ interface InfoStatusProps {
   statusOrder: string | undefined;
   action?: () => void;
   className?: string;
+  hiddenInfo?: boolean;
 }
-const InfoStatus = ({ statusOrder, action, className }: InfoStatusProps) => {
+const InfoStatus = ({ statusOrder, action, className, hiddenInfo }: InfoStatusProps) => {
   const buttonInfo = INFO_STATUS.find(
     (info) => info.status.toLowerCase() == statusOrder?.toLocaleLowerCase()
   );
@@ -14,7 +15,9 @@ const InfoStatus = ({ statusOrder, action, className }: InfoStatusProps) => {
 
   return (
     <>
-      <h3 className="font-bold text-sm uppercase">Status</h3>
+      <h3 className="font-bold text-sm uppercase" hidden={hiddenInfo}>
+        Status
+      </h3>
       <Button
         size={"xs"}
         disabled
@@ -27,7 +30,9 @@ const InfoStatus = ({ statusOrder, action, className }: InfoStatusProps) => {
       >
         {buttonInfo?.status}
       </Button>
-      <p className="text-xs italic">{buttonInfo?.message}</p>
+      <p className="text-xs italic" hidden={hiddenInfo}>
+        {buttonInfo?.message}
+      </p>
     </>
   );
 };

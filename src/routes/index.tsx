@@ -1,5 +1,5 @@
 import Homepage from "@/pages";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./protected-route";
 import Order from "@/pages/order/order";
 import AddOrder from "@/pages/order/add-order";
@@ -7,6 +7,7 @@ import DetailOrder from "@/pages/order/detail-order";
 import RegionCode from "@/pages/region_code/region-code";
 import LoginAdmin from "@/pages/auth/login-admin";
 import OrdersAdminS from "@/pages/admin/super/orders";
+import DeliveryBatch from "@/pages/admin/perwakilan/delivery-batch";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const App = () => {
         {
           path: "/kode-wilayah",
           element: <RegionCode />,
+        },
+        {
+          path: "/batch-pengiriman",
+          element: <DeliveryBatch />,
         },
         {
           path: "/admin",

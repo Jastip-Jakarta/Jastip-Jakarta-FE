@@ -1,6 +1,6 @@
 import { SIDEBAR_ADMIN_SUPER } from "@/utils/constants/sidebar";
 import { useAuth } from "@/utils/context/auth";
-import { Pencil, X } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, PanelRightClose, Pencil, X } from "lucide-react";
 import EditProfile from "./EditProfile";
 import { updateProfileUser } from "@/utils/apis/user/api";
 import toast from "react-hot-toast";
@@ -35,51 +35,73 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
     }
   };
 
-  const onCloseSidebar = () => {
-    setIsOpen(false);
+  const onHideSide = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
     setIsOpenEditProfile(false);
   };
 
   const onLogout = () => {
     changeToken();
-    navigate("/");
+    navigate("/admin/login");
   };
 
   return (
     <>
       {isLoadingUpload ? <Loading /> : null}
       <div
-        className={"bg-slate-100 duration-200 h-screen max-w-sm"}
+        className={"bg-slate-100 duration-200 h-screen max-w-sm sticky top-0"}
         style={{
-          width: `${isOpen ? "100" : "0"}%`,
+          width: `${isOpen ? "100" : "8"}%`,
         }}
       >
-        <div
-          className={`${
-            isOpen ? "block" : "hidden"
-          } flex flex-col items-center justify-center min-h-full gap-10 relative`}
-        >
-          <X className="absolute top-4 right-4 size-8 cursor-pointer" onClick={onCloseSidebar} />
-          <div className="flex flex-col items-center gap-5 ">
-            <label htmlFor="update-image" className="relative cursor-pointer">
-              <img
-                src={user.photo_profile ? user.photo_profile : profileImg}
-                alt="profile_image"
-                className="size-40 rounded-full border object-cover"
-              />
-              <Pencil className="absolute bottom-0 right-2" />
-            </label>
-            <input
-              type="file"
-              hidden
-              id="update-image"
-              onChange={(e) => {
-                onUpdateImage(e);
-              }}
+        <div className={` flex flex-col items-center justify-center min-h-full gap-10 relative`}>
+          {/* Button hide */}
+          {isOpen ? (
+            <PanelLeftClose
+              className="absolute top-4 right-4 size-8 cursor-pointer"
+              onClick={onHideSide}
             />
-            <h3 className="text-2xl font-semibold">Halo, {user.name}</h3>
-          </div>
-          <div className="flex flex-col gap-5 w-full px-8">
+          ) : (
+            <PanelLeftOpen
+              className="absolute top-4 right-4 size-8 cursor-pointer"
+              onClick={onHideSide}
+            />
+          )}
+
+          {/* Profile section */}
+          {isOpen ? (
+            <div className="flex flex-col items-center gap-5 ">
+              <label htmlFor="update-image" className="relative cursor-pointer">
+                <img
+                  src={user.photo_profile ? user.photo_profile : profileImg}
+                  alt="profile_image"
+                  className={`size-40 rounded-full border object-cover`}
+                />
+                <Pencil className="absolute bottom-0 right-2" />
+              </label>
+              <input
+                type="file"
+                hidden
+                id="update-image"
+                onChange={(e) => {
+                  onUpdateImage(e);
+                }}
+              />
+              <h3 className="text-2xl font-semibold">Halo, {user.name}</h3>
+            </div>
+          ) : (
+            <img
+              src={user.photo_profile ? user.photo_profile : profileImg}
+              alt="profile_image"
+              className={`size-16 rounded-full border object-cover`}
+            />
+          )}
+
+          <div className={`flex flex-col ${!isOpen ? "items-center" : ""} gap-5 w-full px-8`}>
             {isOpenEditProfile ? (
               <EditProfile isOpen={isOpenEditProfile} onClose={() => setIsOpenEditProfile(false)} />
             ) : (
@@ -88,14 +110,20 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                   return (
                     <div
                       key={value?.title}
-                      className="flex items-center gap-5 hover:bg-black/10 rounded-sm cursor-pointer py-2 duration-200"
+                      className={`flex items-center ${
+                        !isOpen ? "justify-center" : "justify-start"
+                      } gap-5 hover:bg-black/10 rounded-sm cursor-pointer py-2 duration-200 min-w-14`}
                       onClick={() => {
                         switch (value && value.title) {
                           case "Keluar":
                             onLogout();
                             break;
                           case "Admin":
+                            if (!isOpen) {
+                              setIsOpen(true);
+                            }
                             setIsOpenEditProfile(true);
+
                             break;
                           case "Orderan saya":
                             navigate("/orders");
@@ -115,7 +143,7 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                       }}
                     >
                       {value?.icon("size-10")}
-                      <span className="text-lg">{value?.title}</span>
+                      {isOpen ? <span className="text-lg">{value?.title}</span> : null}
                     </div>
                   );
                 })}

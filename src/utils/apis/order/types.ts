@@ -1,4 +1,5 @@
 import { OPTIONS } from "@/utils/constants/add-order";
+import { INFO_STATUS } from "@/utils/constants/info-status";
 import { z } from "zod";
 
 export const orderSchema = z.object({
@@ -8,6 +9,8 @@ export const orderSchema = z.object({
   whatsapp_number: z
     .string()
     .min(1, { message: "Masukkan nomor whatsapp anda" })
+    .startsWith("62", { message: "Nomor whatsapp tidak valid" })
+    .length(13, { message: "Nomor whatsapp tidak valid" })
     .transform((val, ctx) => {
       const parsed = parseInt(val);
       if (isNaN(parsed)) {
@@ -19,9 +22,7 @@ export const orderSchema = z.object({
       }
       return parsed;
     })
-    .or(z.number())
-    .refine((value) => `${value}`.startsWith("62"), { message: "Nomor whatsapp tidak valid" })
-    .refine((value) => `${value}`.length <= 13, { message: "Nomor whatsapp tidak valid" }),
+    .or(z.number()),
   code: z.enum([...OPTIONS.kodeWilayah], {
     message: "Masukkan kode wilayah anda",
   }),
@@ -30,10 +31,10 @@ export const orderSchema = z.object({
 export type IOrderType = z.infer<typeof orderSchema>;
 
 export const orderSchemaAdminJakarta = z.object({
-  status: z.string().optional(),
-  weight_item: z.number(),
+  status: z.string().min(1, { message: "Ubah status paket" }),
+  weight_item: z.coerce.number().min(1, { message: "Masukkan berat barang" }),
   delivery_batch: z.string(),
-  tracking_number_jastip: z.string(),
+  tracking_number_jastip: z.string().min(1, { message: "Masukkan nomor resi jastip" }),
 });
 
 export type IOrderAdminJakartaType = z.infer<typeof orderSchemaAdminJakarta>;

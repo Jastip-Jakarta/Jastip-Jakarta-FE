@@ -61,3 +61,21 @@ export const FORM_ORDER_ADMIN_JAKARTA = [
     placeholder: "nomor resi jastip",
   },
 ];
+
+export const FORM_ADD_BATCH = [
+  {
+    label: "Bulan",
+    formName: "month",
+    placeholder: "Bulan",
+  },
+  {
+    label: "Tahun",
+    formName: "year",
+    placeholder: "Tahun",
+  },
+  {
+    label: "Batch",
+    formName: "batch",
+    placeholder: "Batch",
+  },
+];

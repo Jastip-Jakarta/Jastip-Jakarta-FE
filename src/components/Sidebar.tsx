@@ -1,4 +1,4 @@
-import { SIDEBAR, SIDEBAR_ADMIN } from "@/utils/constants/sidebar";
+import { SIDEBAR, SIDEBAR_ADMINJ, SIDEBAR_ADMINP } from "@/utils/constants/sidebar";
 import { useAuth } from "@/utils/context/auth";
 import { Pencil, X } from "lucide-react";
 import EditProfile from "./EditProfile";
@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
 
   const onLogout = () => {
     changeToken();
-    navigate("/");
+    user.role ? navigate("/admin/login") : navigate("/");
   };
 
   return (
@@ -84,7 +84,12 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
               <EditProfile isOpen={isOpenEditProfile} onClose={() => setIsOpenEditProfile(false)} />
             ) : (
               <>
-                {(user.role ? SIDEBAR_ADMIN : SIDEBAR).map((value) => {
+                {(user.role === "Jakarta"
+                  ? SIDEBAR_ADMINJ
+                  : user.role === "Perwakilan"
+                  ? SIDEBAR_ADMINP
+                  : SIDEBAR
+                ).map((value) => {
                   return (
                     <div
                       key={value?.title}
@@ -107,6 +112,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                             break;
                           case "Kode wilayah":
                             navigate("/kode-wilayah");
+                            break;
+                          case "Batch pengiriman":
+                            navigate("/batch-pengiriman");
                             break;
 
                           default:

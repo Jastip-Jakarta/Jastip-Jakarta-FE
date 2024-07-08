@@ -24,7 +24,7 @@ export const SIDEBAR = [
   },
 ];
 
-export const SIDEBAR_ADMIN = [
+export const SIDEBAR_ADMINJ = [
   {
     title: "Profile saya",
     icon: ({ className }: any) => <Smile className={className} />,
@@ -38,6 +38,26 @@ export const SIDEBAR_ADMIN = [
     icon: ({ className }: any) => <LogOut className={className} />,
   },
 ];
+
+export const SIDEBAR_ADMINP = [
+  {
+    title: "Profile saya",
+    icon: ({ className }: any) => <Smile className={className} />,
+  },
+  {
+    title: "Orderan jastip",
+    icon: ({ className }: any) => <Package2 className={className} />,
+  },
+  {
+    title: "Batch pengiriman",
+    icon: ({ className }: any) => <Package2 className={className} />,
+  },
+  {
+    title: "Keluar",
+    icon: ({ className }: any) => <LogOut className={className} />,
+  },
+];
+
 export const SIDEBAR_ADMIN_SUPER = [
   {
     title: "Admin",

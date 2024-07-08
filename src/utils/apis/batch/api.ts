@@ -1,6 +1,6 @@
 import { Response } from "@/utils/types/api";
 import axiosWithConfig from "../axios-with-config";
-import { IBatch } from "./types";
+import { BatchPayload, IBatch } from "./types";
 
 export const getBatch = async () => {
   try {
@@ -11,4 +11,11 @@ export const getBatch = async () => {
   }
 };
 
-export const createBatch = () => {};
+export const createBatch = async (body: BatchPayload) => {
+  try {
+    const response = await axiosWithConfig.post("/admin/batch", body);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};

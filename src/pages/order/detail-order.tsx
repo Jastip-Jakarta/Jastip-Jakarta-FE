@@ -1,5 +1,6 @@
 import InfoStatus from "@/components/InfoStatus";
 import Layout from "@/components/Layout";
+import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,21 +22,23 @@ import {
   orderSchemaAdminJakarta,
 } from "@/utils/apis/order/types";
 import { FORM_ORDER, FORM_ORDER_ADMIN_JAKARTA } from "@/utils/constants/add-order";
+import { INFO_STATUS } from "@/utils/constants/info-status";
 import { useAuth } from "@/utils/context/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil } from "lucide-react";
+import { ChevronRight, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
 const DetailOrder = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { orderId } = useParams();
+  const [isEdit, setIsEdit] = useState(false);
   const [order, setOrder] = useState<IOrders>();
   const [batchs, setBatchs] = useState<IBatch[]>();
-  const [isEdit, setIsEdit] = useState(false);
+  const [isOpenStatusModal, setIsOpenStatusModal] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -86,6 +89,7 @@ const DetailOrder = () => {
     register: registerAdminJ,
     handleSubmit: handleSubmitAdminJ,
     setValue: setValueAdminJ,
+    getValues: getValuesAdminJ,
     formState: { errors: errorsAdminJ },
   } = useForm<IOrderAdminJakartaType>({ resolver: zodResolver(orderSchemaAdminJakarta) });
   const onSubmitUpdateOrderByAdminJ = handleSubmitAdminJ(async (body: IOrderAdminJakartaType) => {
@@ -121,9 +125,11 @@ const DetailOrder = () => {
               <h3 className="font-bold ">Nama Penerima</h3>
               <h4 className="font-semibold text-lg">{order?.name}</h4>
             </div>
-            <div className=" space-y-1 w-1/2 ">
-              <InfoStatus statusOrder={order?.status} className="cursor-pointer" />
-            </div>
+            {!user.role || !isEdit ? (
+              <div className=" space-y-1 w-1/2 ">
+                <InfoStatus statusOrder={order?.status} className="cursor-pointer" />
+              </div>
+            ) : null}
           </div>
 
           {!isEdit ? (
@@ -142,7 +148,7 @@ const DetailOrder = () => {
                     {order?.code} - {order?.region}
                   </span>
                   <p className="whitespace-nowrap text-xs">paket mu diantar ke alamat sini</p>
-                  <p className="whitespace-pre text-sm font-semibold">{order?.full_address}</p>
+                  <p className="whitespace-normal text-sm font-semibold">{order?.full_address}</p>
                 </div>
                 <div>
                   <h4 className="font-bold text-sm">Nomor telepon whatsapp</h4>
@@ -268,6 +274,48 @@ const DetailOrder = () => {
                     </div>
                   ))}
                 </>
+              ) : null}
+
+              {/* UPDATE STATUS ORDER */}
+              {user.role ? (
+                <div className="space-y-3 mt-3">
+                  <h1 className="uppercase font-bold">Ubah status paket</h1>
+                  <div
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={() => setIsOpenStatusModal(true)}
+                  >
+                    <InfoStatus
+                      statusOrder={getValuesAdminJ("status") ?? order?.status}
+                      hiddenInfo
+                    />
+                    <ChevronRight className="size-8" />
+                  </div>
+                  {errorsAdminJ?.status ? (
+                    <p className="text-sm text-red-500 -mt-2">{errorsAdminJ?.status?.message}</p>
+                  ) : null}
+                  <Modal isOpen={isOpenStatusModal} onClose={() => setIsOpenStatusModal(false)}>
+                    <div className="space-y-4">
+                      <h1 className="font-bold text-xl uppercase text-center">pilih status</h1>
+                      <p className="text-center text-[13px]">
+                        hati-hati dalam mengubah status mengubah status dapat otomatis mengirimkan
+                        pesan whatsapp kepada penerima.
+                      </p>
+                      <div className="space-y-6 w-5/6 mx-auto bg-slate-50 py-6 px-8 border rounded-sm">
+                        {INFO_STATUS.map((info, index) => (
+                          <div
+                            className="flex flex-col cursor-pointer"
+                            onClick={() => {
+                              setValueAdminJ("status", info.status);
+                              setIsOpenStatusModal(false);
+                            }}
+                          >
+                            <InfoStatus key={index} statusOrder={info.status} hiddenInfo />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </Modal>
+                </div>
               ) : null}
             </div>
           )}
