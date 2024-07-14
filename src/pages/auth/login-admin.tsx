@@ -29,7 +29,7 @@ const LoginAdmin = () => {
       changeToken(result.data.token);
       localStorage.setItem("role", result.data.role);
       toast.success(result.message);
-      result.data.role === "Super" ? navigate("/admin/orders") : navigate("/orders");
+      result.data.role === "Super" ? navigate("/admin/dashboard") : navigate("/orders");
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -37,12 +37,13 @@ const LoginAdmin = () => {
   return (
     <div className="bg-black/20">
       <div className="max-w-[500px] mx-auto bg-slate-100 min-h-screen text-black py-3 px-4 space-y-5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center relative">
           <button className="flex items-center gap-3 " onClick={() => navigate("/")}>
             <ArrowLeft className="size-7 " />
           </button>
-          <h2 className="font-bold text-lg">Masuk sebagai Admin</h2>
-          <span className="text-sm font-semibold">Daftar</span>
+          <h2 className="font-bold text-lg absolute left-1/2 -translate-x-1/2 text-nowrap">
+            Masuk sebagai Admin
+          </h2>
         </div>
 
         <form onSubmit={onSumbitLogin} className="space-y-4 py-3">

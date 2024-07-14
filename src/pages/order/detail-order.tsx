@@ -13,7 +13,12 @@ import {
 } from "@/components/ui/select";
 import { getBatch } from "@/utils/apis/batch/api";
 import { IBatch } from "@/utils/apis/batch/types";
-import { getOrder, updateOrder, updateOrderByAdminJakarta } from "@/utils/apis/order/api";
+import {
+  getOrder,
+  updateOrder,
+  updateOrderByAdminJakarta,
+  updateStatusOrderByAdminPerwakilan,
+} from "@/utils/apis/order/api";
 import {
   IOrderAdminJakartaType,
   IOrders,
@@ -38,6 +43,7 @@ const DetailOrder = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [order, setOrder] = useState<IOrders>();
   const [batchs, setBatchs] = useState<IBatch[]>();
+  const [statusOrderAdminP, setStatusOrderAdminP] = useState("");
   const [isOpenStatusModal, setIsOpenStatusModal] = useState(false);
 
   useEffect(() => {
@@ -103,6 +109,20 @@ const DetailOrder = () => {
     }
   });
 
+  // ADMIN PERWAKILAN UPDATE STATUS ORDER
+  const onSubmitUpdateStatusByAdminP = async (e: any) => {
+    e.preventDefault();
+    try {
+      const result = await updateStatusOrderByAdminPerwakilan(orderId!, {
+        status: statusOrderAdminP,
+      });
+      toast.success(result.message);
+      navigate("/orders");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     setValue("item_name", order?.item_name as string);
     setValue("tracking_number", order?.tracking_number as string);
@@ -117,10 +137,16 @@ const DetailOrder = () => {
     <Layout>
       <div className="py-3 px-5 ">
         <form
-          onSubmit={user.role === "Jakarta" ? onSubmitUpdateOrderByAdminJ : onSubmitUpdateOrder}
-          className="bg-white w-full  min-h-[calc(100vh-110px)] p-4 rounded-sm flex flex-col gap-10"
+          onSubmit={
+            user.role === "Jakarta"
+              ? onSubmitUpdateOrderByAdminJ
+              : user.role === "Perwakilan"
+              ? onSubmitUpdateStatusByAdminP
+              : onSubmitUpdateOrder
+          }
+          className="bg-white w-full  min-h-[calc(100vh-110px)] p-4 rounded-sm flex flex-col gap-5"
         >
-          <div className="flex justify-between ">
+          <div className="flex justify-between text-sm">
             <div className="w-1/2">
               <h3 className="font-bold ">Nama Penerima</h3>
               <h4 className="font-semibold text-lg">{order?.name}</h4>
@@ -131,12 +157,15 @@ const DetailOrder = () => {
               </div>
             ) : null}
           </div>
-
+          <div className="w-full text-xs sm:text-sm">
+            <p className="whitespace-nowrap ">paket mu diantar ke alamat ini :</p>
+            <p className="whitespace-break-spaces  font-semibold ">{order?.full_address}</p>
+          </div>
           {!isEdit ? (
             <div className="flex justify-between items-start flex-1">
-              <div className="space-y-4 w-1/2">
+              <div className="space-y-4 w-1/2 text-sm">
                 <h4 className="text-sm font-bold">
-                  Nomor order : <span className="font-normal">{order?.order_id}</span>
+                  Nomor order : <span className="font-medium tracking-wide">{order?.order_id}</span>
                 </h4>
                 <div>
                   <h4 className="font-bold text-sm">Nama barang</h4>
@@ -147,17 +176,16 @@ const DetailOrder = () => {
                   <span>
                     {order?.code} - {order?.region}
                   </span>
-                  <p className="whitespace-nowrap text-xs">paket mu diantar ke alamat sini</p>
-                  <p className="whitespace-normal text-sm font-semibold">{order?.full_address}</p>
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm">Nomor telepon whatsapp</h4>
+                  <h4 className="font-bold text-sm whitespace-nowrap">Nomor telepon whatsapp</h4>
                   <span>+{order?.whatsapp_number}</span>
                 </div>
                 <div>
                   <h4 className="font-bold text-sm">Nomor Resi</h4>
                   <div className="flex items-center gap-3">
-                    <span>{order?.tracking_number}</span> - <span>{order?.online_store}</span>
+                    <span>{order?.tracking_number}</span> -{" "}
+                    <span className="whitespace-nowrap">{order?.online_store}</span>
                   </div>
                 </div>
                 <div>
@@ -165,8 +193,9 @@ const DetailOrder = () => {
                   <span>{order?.weight_item} Kg</span>
                 </div>
               </div>
+
               <div className="flex flex-col pr-10 w-1/2">
-                <span className="font-bold text-sm">Nomor Resi Jastip</span>
+                <span className="font-bold text-sm whitespace-pre">Nomor Resi Jastip</span>
                 <span>{order?.tracking_number_jastip ? order.tracking_number_jastip : "-"}</span>
               </div>
             </div>
@@ -285,7 +314,13 @@ const DetailOrder = () => {
                     onClick={() => setIsOpenStatusModal(true)}
                   >
                     <InfoStatus
-                      statusOrder={getValuesAdminJ("status") ?? order?.status}
+                      statusOrder={
+                        statusOrderAdminP !== ""
+                          ? statusOrderAdminP
+                          : getValuesAdminJ("status")
+                          ? getValuesAdminJ("status")
+                          : order?.status
+                      }
                       hiddenInfo
                     />
                     <ChevronRight className="size-8" />
@@ -305,7 +340,11 @@ const DetailOrder = () => {
                           <div
                             className="flex flex-col cursor-pointer"
                             onClick={() => {
-                              setValueAdminJ("status", info.status);
+                              if (user.role === "Jakarta") {
+                                setValueAdminJ("status", info.status);
+                              } else {
+                                setStatusOrderAdminP(info.status);
+                              }
                               setIsOpenStatusModal(false);
                             }}
                           >
@@ -322,7 +361,7 @@ const DetailOrder = () => {
 
           {/* SECTION BUTTON / BOTTOM */}
           {!isEdit ? (
-            <div className="w-full flex items-center gap-36">
+            <div className="w-full flex items-center justify-between">
               <div
                 className={`flex items-center gap-2 ${
                   order?.status.toLocaleLowerCase() === "menunggu diterima"
@@ -342,7 +381,7 @@ const DetailOrder = () => {
               </div>
               <Button
                 size={"sm"}
-                className="w-full rounded-full h-8"
+                className="w-full max-w-[150px] rounded-full h-8"
                 type="button"
                 onClick={() => {
                   navigate("/orders");
@@ -352,10 +391,10 @@ const DetailOrder = () => {
               </Button>
             </div>
           ) : (
-            <div className="w-full space-y-2 flex items-center gap-36">
+            <div className="w-full flex items-center justify-between">
               <Button
                 size={"sm"}
-                className="w-full rounded-full h-8 bg-[#8C98A9] hover:bg-[#8C98A9]/80"
+                className="w-full max-w-[140px] rounded-full h-8 bg-[#8C98A9] hover:bg-[#8C98A9]/80"
                 onClick={() => setIsEdit(false)}
                 type="button"
                 disabled={isSubmitting}
@@ -364,7 +403,7 @@ const DetailOrder = () => {
               </Button>
               <Button
                 size={"sm"}
-                className="w-full rounded-full h-8"
+                className="w-full max-w-[140px] rounded-full h-8"
                 type="submit"
                 disabled={isSubmitting}
               >

@@ -15,7 +15,7 @@ const InfoStatus = ({ statusOrder, action, className, hiddenInfo }: InfoStatusPr
 
   return (
     <>
-      <h3 className="font-bold text-sm uppercase" hidden={hiddenInfo}>
+      <h3 className="font-bold text-xs uppercase" hidden={hiddenInfo}>
         Status
       </h3>
       <Button
@@ -23,14 +23,14 @@ const InfoStatus = ({ statusOrder, action, className, hiddenInfo }: InfoStatusPr
         disabled
         variant={buttonVariant}
         className={cn(
-          "uppercase !text-[10px] !font-bold max-w-full rounded-full disabled:opacity-100 tracking-wider whitespace-normal leading-snug",
+          "uppercase !text-[10px] !font-bold max-w-full rounded-full disabled:opacity-100 tracking-wider whitespace-normal leading-snug ",
           className
         )}
         onClick={action}
       >
         {buttonInfo?.status}
       </Button>
-      <p className="text-xs italic" hidden={hiddenInfo}>
+      <p className="text-[11px] italic" hidden={hiddenInfo}>
         {buttonInfo?.message}
       </p>
     </>

@@ -6,7 +6,7 @@ const LayoutAdmin = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex items-start min-h-screen">
       <SidebarAdmin isOpen={isOpenSide} setIsOpen={setIsOpenSide} />
-      <div className="bg-[#FDEACA] pb-20 pt-3 px-5 grow min-h-screen">{children}</div>
+      <div className="bg-[#FDEACA] pb-20 pt-5 px-3 grow min-h-screen">{children}</div>
     </div>
   );
 };

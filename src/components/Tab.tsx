@@ -7,7 +7,7 @@ interface TabProps {
 const Tab = ({ setTab, tab }: TabProps) => {
   return (
     <div
-      className={`relative flex items-center mx-auto max-w-sm bg-slate-100 rounded-md overflow-hidden p-1 font-medium text-sm `}
+      className={`relative flex items-center mx-auto max-w-sm bg-slate-100 rounded-md overflow-hidden p-1 font-semibold text-sm `}
     >
       <div
         className={`w-full text-center py-1 cursor-pointer rounded-md ${

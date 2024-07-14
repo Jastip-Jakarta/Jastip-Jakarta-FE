@@ -14,7 +14,7 @@ export interface IUser {
 export const EditUserSchema = z.object({
   name: z.string().min(1, { message: "Nama tidak boleh kosong" }),
   email: z.string().min(1, { message: "Email tidak boleh kosong" }),
-  phone: z.number().min(1, { message: "Nomor whatsapp tidak boleh kosong" }),
+  phone: z.coerce.number().min(1, { message: "Nomor whatsapp tidak boleh kosong" }),
 });
 
 export type IEditUserType = z.infer<typeof EditUserSchema>;

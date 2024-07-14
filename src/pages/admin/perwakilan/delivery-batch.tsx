@@ -1,3 +1,4 @@
+import CardDeliveryBatch from "@/components/Card/CardDeliveryBatch";
 import Layout from "@/components/Layout";
 import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
@@ -49,36 +50,9 @@ const DeliveryBatch = () => {
   return (
     <Layout>
       <div className="pb-20 pt-3 px-5 space-y-6 ">
-        <h1 className="font-bold text-3xl">Batch Pengiriman</h1>
+        <h1 className="font-bold text-2xl">Batch Pengiriman</h1>
         {batchs?.map((batch) => (
-          <div
-            key={batch.delivery_batch}
-            className="bg-white  px-3 py-4 rounded-md w-full space-y-3 shadow-sm border"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="uppercase font-bold text-lg">Batch pengiriman</h3>
-                <h3 className="font-semibold text-base">{batch.delivery_batch}</h3>
-              </div>
-              <Button size={"xs"} className="!text-xs rounded-full font-semibold">
-                DOWNLOAD CSV
-              </Button>
-            </div>
-            <div className="flex items-center gap-8 text-sm">
-              <div className="flex flex-col">
-                <h5 className="font-bold">BULAN</h5>
-                <span>{batch.month}</span>
-              </div>
-              <div className="flex flex-col">
-                <h5 className="font-bold">TAHUN</h5>
-                <span>{batch.year}</span>
-              </div>
-              <div className="flex flex-col">
-                <h5 className="font-bold">BATCH</h5>
-                <span>{batch.batch}</span>
-              </div>
-            </div>
-          </div>
+          <CardDeliveryBatch batch={batch} key={batch.batch} />
         ))}
       </div>
 

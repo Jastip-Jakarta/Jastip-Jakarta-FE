@@ -35,7 +35,7 @@ const Login: FC<{ onClose: () => void }> = ({ onClose }) => {
   });
   return (
     <>
-      <p className="text-base pb-6 text-slate-500 ">
+      <p className="text-base pb-6 text-slate-700 ">
         Kalau kamu sudah mempunyai akun JASTIP Jakarta silahkan login.
       </p>
       <form onSubmit={onSumbitLogin} className="space-y-4">
@@ -56,14 +56,14 @@ const Login: FC<{ onClose: () => void }> = ({ onClose }) => {
             ) : null}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Button type="submit" disabled={isSubmitting}>
             Masuk
           </Button>
           <span className="text-sm py-2 font-medium hover:underline underline-offset-2 cursor-pointer text-slate-600">
             Lupa Sandi?
           </span>
-          <p className="text-sm">
+          <p className="text-[13px]">
             kalau kamu belum memiliki akun silahkan daftar disini{" "}
             <span
               className="font-bold underline underline-offset-4 cursor-pointer"

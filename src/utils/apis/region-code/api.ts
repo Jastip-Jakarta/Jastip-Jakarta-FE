@@ -1,6 +1,6 @@
 import { Response } from "@/utils/types/api";
 import axiosWithConfig from "../axios-with-config";
-import { IRegion } from "./types";
+import { IRegion, RegionPayload } from "./types";
 
 export const getRegions = async () => {
   try {
@@ -12,4 +12,11 @@ export const getRegions = async () => {
 };
 
 export const getRegion = async () => {};
-export const createRegion = async () => {};
+export const createRegion = async (body: RegionPayload) => {
+  try {
+    const response = await axiosWithConfig.post("admin/region", body);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};

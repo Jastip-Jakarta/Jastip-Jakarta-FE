@@ -1,4 +1,13 @@
-import { Code, LogOut, Package2, ShieldQuestion, Smile } from "lucide-react";
+import {
+  Boxes,
+  Code,
+  LayoutDashboard,
+  LogOut,
+  Package2,
+  ShieldQuestion,
+  Smile,
+  Users,
+} from "lucide-react";
 
 export const SIDEBAR = [
   {
@@ -64,23 +73,34 @@ export const SIDEBAR_ADMIN_SUPER = [
     icon: ({ className }: any) => <Smile className={className} />,
   },
   {
+    title: "Dashboard",
+    path: "/admin/dashboard",
+    icon: ({ className }: any) => <LayoutDashboard className={className} />,
+  },
+  {
     title: "Orderan Jastip",
+    path: "/admin/orders",
     icon: ({ className }: any) => <Package2 className={className} />,
   },
   {
     title: "Batch Pengiriman",
-    icon: ({ className }: any) => <Package2 className={className} />,
+    path: "/admin/batch-pengiriman",
+    icon: ({ className }: any) => <Boxes className={className} />,
   },
-  {
-    title: "Dashboard",
-    icon: ({ className }: any) => <Package2 className={className} />,
-  },
+
   {
     title: "Kode wilayah",
+    path: "/admin/kode-wilayah",
     icon: ({ className }: any) => <Code className={className} />,
   },
   {
+    title: "Users",
+    path: "/admin/users",
+    icon: ({ className }: any) => <Users className={className} />,
+  },
+  {
     title: "Keluar",
+    path: "admin",
     icon: ({ className }: any) => <LogOut className={className} />,
   },
 ];

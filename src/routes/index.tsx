@@ -1,5 +1,5 @@
 import Homepage from "@/pages";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./protected-route";
 import Order from "@/pages/order/order";
 import AddOrder from "@/pages/order/add-order";
@@ -8,6 +8,12 @@ import RegionCode from "@/pages/region_code/region-code";
 import LoginAdmin from "@/pages/auth/login-admin";
 import OrdersAdminS from "@/pages/admin/super/orders";
 import DeliveryBatch from "@/pages/admin/perwakilan/delivery-batch";
+import Customers from "@/pages/admin/order-process/customers";
+import CustomerOrders from "@/pages/admin/order-process/customer-orders";
+import Dashboard from "@/pages/admin/super/dashboard";
+import RegionCodeAdminSuper from "@/pages/admin/super/region-code";
+import DeliveryBatchAdminSuper from "@/pages/admin/super/delivery-batch";
+import Users from "@/pages/admin/super/users";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -32,6 +38,14 @@ const App = () => {
           element: <DetailOrder />,
         },
         {
+          path: "/customers/:batch/:code",
+          element: <Customers />,
+        },
+        {
+          path: "/customer-orders/:batch/:code/:customerName",
+          element: <CustomerOrders />,
+        },
+        {
           path: "/kode-wilayah",
           element: <RegionCode />,
         },
@@ -43,12 +57,24 @@ const App = () => {
           path: "/admin",
           children: [
             {
+              path: "dashboard",
+              element: <Dashboard />,
+            },
+            {
               path: "orders",
               element: <OrdersAdminS />,
             },
             {
-              path: "dashboard",
-              element: <div>Dashboard admin super</div>,
+              path: "batch-pengiriman",
+              element: <DeliveryBatchAdminSuper />,
+            },
+            {
+              path: "kode-wilayah",
+              element: <RegionCodeAdminSuper />,
+            },
+            {
+              path: "users",
+              element: <Users />,
             },
             {
               path: "login",

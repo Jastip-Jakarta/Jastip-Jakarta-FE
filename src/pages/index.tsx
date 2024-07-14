@@ -10,8 +10,8 @@ const Homepage = () => {
   return (
     <div className="bg-black/20">
       <div className="relative flex items-center justify-center max-w-[500px] mx-auto bg-slate-100 min-h-screen text-black ">
-        <div className="flex flex-col gap-5 max-w-sm w-full">
-          <h2 className="font-bold text-[40px]">Butuh JASTIP JAKARTA?</h2>
+        <div className="flex flex-col gap-5 max-w-sm w-full px-4 sm:px-0">
+          <h2 className="font-bold text-4xl sm:text-[40px]">Butuh JASTIP JAKARTA?</h2>
           <span className="font-semibold text-zinc-800">disini aja</span>
           <Button onClick={() => setIsOpenLogin(true)} className="w-full">
             Masuk

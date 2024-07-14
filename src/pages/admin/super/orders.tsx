@@ -1,4 +1,4 @@
-import Card from "@/components/Card";
+import Card from "@/components/Card/Card";
 import LayoutAdmin from "@/components/LayoutAdmin";
 import SearchOrder from "@/components/SearchOrder";
 import Tab, { tabType } from "@/components/Tab";
@@ -9,12 +9,22 @@ import { ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const OrdersAdminS = () => {
   const navigate = useNavigate();
+
   const [keyword, setKeyword] = useState("");
   const [tab, setTab] = useState<tabType>("wait");
   const [isOpenWait, setIsOpenWait] = useState(false);
+  const [isOpenOrder, setIsOpenOrder] = useState(false);
   const [ordersWait, setOrdersWait] = useState<IOrders[]>();
   const [ordersProcess, setOrdersProcess] = useState<IOrdersProcess[] | null>();
   const [resultOrdersSearch, setResultOrdersSearch] = useState<IOrders[] | null>(null);
@@ -63,7 +73,7 @@ const OrdersAdminS = () => {
 
   return (
     <LayoutAdmin>
-      <div className="space-y-4 max-w-4xl mx-auto">
+      <div className="space-y-4 max-w-5xl mx-auto">
         <h1 className="font-bold text-3xl">Order Titipan</h1>
         <SearchOrder onSubmit={handleSearchUserOrders} setKeyword={setKeyword} />
         <Tab setTab={setTab} tab={tab} />
@@ -78,9 +88,24 @@ const OrdersAdminS = () => {
                 >
                   <h3 className="uppercase font-bold text-xl">menunggu diterima admin</h3>
                   <div className="max-w-4xl mx-auto space-y-10">
-                    <Card key={orderWait.order_id} order={orderWait} />
-                    <Card key={orderWait.order_id} order={orderWait} />
-                    <Card key={orderWait.order_id} order={orderWait} />
+                    <Dialog open={isOpenOrder} onOpenChange={setIsOpenOrder}>
+                      <DialogTrigger asChild>
+                        <Card
+                          key={orderWait.order_id}
+                          order={orderWait}
+                          onActionSelengkapnya={() => setIsOpenOrder(true)}
+                        />
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[525px]">
+                        <DialogTitle className="text-xl font-semibold">Detail order</DialogTitle>
+                        <form onSubmit={() => {}} className="space-y-2">
+                          <h1>Detail order</h1>
+                          <DialogFooter className="mt-5">
+                            <Button type="submit">Simpan</Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               ))}

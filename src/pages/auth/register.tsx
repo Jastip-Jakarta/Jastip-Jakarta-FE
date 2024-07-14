@@ -3,15 +3,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IRegisterType, RegisterSchema } from "@/utils/apis/auth/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC, PropsWithChildren, useState } from "react";
+import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Register as RegisterAction } from "@/utils/apis/auth/api";
 import toast from "react-hot-toast";
-import { Modal } from "@/components/Modal";
 import InputPassword from "@/components/InputPassword";
 
 const Register: FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [passwordHide, setPasswordHide] = useState(true);
 
   const {
@@ -31,7 +29,7 @@ const Register: FC<{ onClose: () => void }> = ({ onClose }) => {
   });
   return (
     <>
-      <p className="text-base pb-6 text-slate-500 ">
+      <p className="text-base pb-6 text-slate-700 ">
         Sebelum menggunakan JASTIP Jakarta kamu harus mendaftar dulu yah!
       </p>
       <form onSubmit={onSumbitRegister} className="space-y-4">
@@ -74,11 +72,11 @@ const Register: FC<{ onClose: () => void }> = ({ onClose }) => {
             ) : null}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Button disabled={isSubmitting} type="submit">
             {isSubmitting ? "loading" : "Daftar"}
           </Button>
-          <p className="text-sm">
+          <p className="text-[13px]">
             kalau kamu sudah memiliki akun silahkan login{" "}
             <span
               className="font-bold underline underline-offset-4 cursor-pointer"

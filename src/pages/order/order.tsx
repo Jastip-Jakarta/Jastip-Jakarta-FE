@@ -1,19 +1,26 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, PlusCircle } from "lucide-react";
+import { ChevronUp, Plus, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import packageIcon from "../../../public/images/package-2.png";
 import waIcon from "../../../public/images/WhatsAppIcon.png";
 import useTitle from "@/utils/hooks/useTitle";
 import { useNavigate } from "react-router-dom";
-import { getOrders, getOrdersProcess, searchUserOrders } from "@/utils/apis/order/api";
-import { IOrders, IOrdersProcess } from "@/utils/apis/order/types";
+import {
+  getOrders,
+  getOrdersProcess,
+  getOrdersProcessBatchByAdmin,
+  searchUserOrders,
+  searchUserOrdersByAdmin,
+} from "@/utils/apis/order/api";
+import { IOrderProcessBatch, IOrders, IOrdersProcess } from "@/utils/apis/order/types";
 import toast from "react-hot-toast";
-import Card from "@/components/Card";
+import Card from "@/components/Card/Card";
 import { useAuth } from "@/utils/context/auth";
 import { getOrdersByAdmin } from "@/utils/apis/admin/api";
 import SearchOrder from "@/components/SearchOrder";
 import Tab, { tabType } from "@/components/Tab";
+import OrderProcessBatch from "@/components/OrderProcessBatch";
 
 const Order = () => {
   const { user } = useAuth();
@@ -24,13 +31,19 @@ const Order = () => {
   const [orders, setOrders] = useState<IOrders[]>();
   const [isOpenWait, setIsOpenWait] = useState(false);
   const [ordersProcess, setOrdersProcess] = useState<IOrdersProcess[] | null>();
-  const [isOpenProcessByBatch, setIsOpenProcessByBatch] = useState<number | null>(null);
   const [resultOrdersSearch, setResultOrdersSearch] = useState<IOrders[] | null>(null);
+  const [isOpenProcessByBatch, setIsOpenProcessByBatch] = useState<number | null>(null);
+  const [ordersProcessBatch, setOrdersProcessBatch] = useState<IOrderProcessBatch[]>();
+  const [isOpenOrderProcessRegionCode, setIsOpenOrderProcessRegionCode] = useState<string | null>();
 
   useEffect(() => {
     changeTitle("Jastip | Order");
     fetchOrders();
-    fetchOrdersProcess();
+    if (user.role) {
+      fetchOrdersProcessBatch();
+    } else {
+      fetchOrdersProcess();
+    }
   }, [user]);
 
   const fetchOrders = async () => {
@@ -59,7 +72,9 @@ const Order = () => {
         setResultOrdersSearch(null);
         return;
       }
-      const result = await searchUserOrders(keyword);
+      const result = await (user.role
+        ? searchUserOrdersByAdmin(keyword)
+        : searchUserOrders(keyword));
       setResultOrdersSearch(result.data);
       if (!result.data) {
         toast.error("Titipan tidak ditemukan!");
@@ -69,10 +84,23 @@ const Order = () => {
     }
   };
 
+  const fetchOrdersProcessBatch = async () => {
+    try {
+      const result = await getOrdersProcessBatchByAdmin();
+      setOrdersProcessBatch(result.data);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const onClickRegionCode = (batch: string, regionCode: string) => {
+    navigate(`/customers/${batch}/${regionCode}`);
+  };
+
   return (
     <Layout>
       <div className="pb-20 pt-3 px-5 space-y-6 ">
-        <h1 className="font-bold text-3xl">Order Titipan kamu</h1>
+        <h1 className="font-bold text-2xl">Order Titipan kamu</h1>
         {/*SECTION SEARCH */}
         <SearchOrder onSubmit={handleSearchUserOrders} setKeyword={setKeyword} />
 
@@ -84,53 +112,55 @@ const Order = () => {
             {/*SECTION CONTENT */}
             {tab === "wait" ? (
               // ORDERS WAIT
-              <div className="relative min-h-[100px] flex justify-center items-center gap-2 bg-white px-4 py-2 rounded-md ">
-                <h3 className="uppercase font-bold absolute top-2 left-4">
-                  menunggu diterima admin
-                </h3>
-                <div
-                  className={`py-10 ${orders?.length ? "gap-12" : "gap-2"} flex-col items-center ${
-                    isOpenWait ? "flex" : "hidden"
-                  } w-full`}
-                >
-                  {!orders?.length ? (
-                    <>
-                      <img src={packageIcon} alt="package-icon" />
-                      <p className="font-semibold -mt-3 text-sm">
-                        kamu belum memiliki orderan jastip
-                      </p>
-                      <PlusCircle
-                        className="size-10 mt-5 cursor-pointer"
-                        onClick={() => navigate("/order")}
-                      />
-                      <p className="font-semibold  text-sm">Tambahkan Orderan Jastip</p>
-                    </>
-                  ) : (
-                    <>
-                      {orders.map((order, index) => (
-                        <Card
-                          key={index}
-                          order={order}
-                          onActionSelengkapnya={() => navigate(`/order/${order?.order_id}`)}
+              <>
+                <div className="relative min-h-[100px] flex justify-center items-center gap-2 bg-white px-4 py-2 rounded-md ">
+                  <h3 className="uppercase font-bold absolute top-2 left-4">
+                    menunggu diterima admin
+                  </h3>
+                  <div
+                    className={`py-10 ${
+                      orders?.length ? "gap-12" : "gap-2"
+                    } flex-col items-center ${isOpenWait ? "flex" : "hidden"} w-full`}
+                  >
+                    {!user.role && !orders?.length ? (
+                      <>
+                        <img src={packageIcon} alt="package-icon" />
+                        <p className="font-semibold -mt-3 text-sm">
+                          kamu belum memiliki orderan jastip
+                        </p>
+                        <PlusCircle
+                          className="size-10 mt-5 cursor-pointer"
+                          onClick={() => navigate("/order")}
                         />
-                      ))}
-                    </>
-                  )}
+                        <p className="font-semibold  text-sm">Tambahkan Orderan Jastip</p>
+                      </>
+                    ) : (
+                      <>
+                        {orders?.map((order, index) => (
+                          <Card
+                            key={index}
+                            order={order}
+                            onActionSelengkapnya={() => navigate(`/order/${order?.order_id}`)}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </div>
+                  <div
+                    className="absolute bottom-2 flex flex-col items-center cursor-pointer"
+                    onClick={() => setIsOpenWait(!isOpenWait)}
+                  >
+                    <ChevronUp
+                      className={`size-10 text-black/40 ${isOpenWait ? "rotate-0" : "rotate-180"}`}
+                    />
+                    {!isOpenWait ? (
+                      <span className="text-sm -mt-2">buka untuk selengkapnya</span>
+                    ) : null}
+                  </div>
                 </div>
-                <div
-                  className="absolute bottom-2 flex flex-col items-center cursor-pointer"
-                  onClick={() => setIsOpenWait(!isOpenWait)}
-                >
-                  <ChevronUp
-                    className={`size-10 text-black/40 ${isOpenWait ? "rotate-0" : "rotate-180"}`}
-                  />
-                  {!isOpenWait ? (
-                    <span className="text-sm -mt-2">buka untuk selengkapnya</span>
-                  ) : null}
-                </div>
-              </div>
+              </>
             ) : (
-              // ORDER PROCESS
+              // ORDER PROCESS USER
               <>
                 {ordersProcess?.length ? (
                   ordersProcess.map((orderProcess, index) => (
@@ -209,6 +239,17 @@ const Order = () => {
                       </div>
                     </div>
                   ))
+                ) : ordersProcessBatch?.length ? (
+                  // ORDER PROCESS ADMIN
+                  ordersProcessBatch.map((batch, index) => (
+                    <OrderProcessBatch
+                      key={index}
+                      batch={batch}
+                      onClickRegionCode={onClickRegionCode}
+                      isOpen={isOpenOrderProcessRegionCode!}
+                      setIsOpen={setIsOpenOrderProcessRegionCode}
+                    />
+                  ))
                 ) : (
                   <h2 className="text-center font-medium">
                     Belum ada orderan yang diproses mohon ditunggu!
@@ -218,6 +259,7 @@ const Order = () => {
             )}
           </>
         ) : (
+          // Result of search orders
           <div className="flex flex-col gap-3">
             {resultOrdersSearch.map((order, index) => (
               <Card
@@ -231,12 +273,17 @@ const Order = () => {
       </div>
 
       {/* WHATSAPP ADMIN */}
-      <div className="fixed bottom-0 ">
-        <div className="absolute bottom-5 left-5">
-          <Button className="bg-[#1E9C09] hover:bg-[#1E9C09]/80 rounded-bl-none uppercase text-[10px] space-x-1 px-8">
-            <img src={waIcon} alt="wa-icon" />
-            <span>hubungi admin</span>
+      <div className="fixed w-full max-w-[500px] bottom-0">
+        <div className="relative bottom-5 px-5 flex items-end justify-between">
+          <Button className="bg-[#1E9C09] hover:bg-[#1E9C09]/80  uppercase text-[10px] space-x-1 rounded-full  size-14 sm:size-auto sm:rounded-xl sm:rounded-bl-none">
+            <img src={waIcon} alt="wa-icon" className="size-8 object-cover" />
+            <span className="hidden sm:block">hubungi admin</span>
           </Button>
+          {orders?.length ? (
+            <Button className="rounded-full size-14" onClick={() => navigate("/order")}>
+              <Plus className="size-8" />
+            </Button>
+          ) : null}
         </div>
       </div>
     </Layout>

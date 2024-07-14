@@ -1,6 +1,13 @@
 import { Response } from "@/utils/types/api";
 import axiosWithConfig from "../axios-with-config";
-import { IOrderAdminJakartaType, IOrders, IOrdersProcess, IOrderType } from "./types";
+import {
+  IOrderAdminJakartaType,
+  IOrderProcessBatch,
+  IOrders,
+  IOrdersProcess,
+  IOrdersProcessCustomers,
+  IOrderType,
+} from "./types";
 
 export const createOrder = async (body: IOrderType) => {
   try {
@@ -14,6 +21,14 @@ export const createOrder = async (body: IOrderType) => {
 export const searchUserOrders = async (keyword: string) => {
   try {
     const response = await axiosWithConfig.get(`/users/order/search?item_name=${keyword}`);
+    return response.data as Response<IOrders[]>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+export const searchUserOrdersByAdmin = async (keyword: string) => {
+  try {
+    const response = await axiosWithConfig.get(`/admin/order/search?item_name=${keyword}`);
     return response.data as Response<IOrders[]>;
   } catch (error: any) {
     throw Error(error.response.data.message);
@@ -33,6 +48,39 @@ export const getOrdersProcess = async () => {
   try {
     const response = await axiosWithConfig.get("/users/order/process");
     return response.data as Response<IOrdersProcess[]>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const getOrdersProcessBatchByAdmin = async () => {
+  try {
+    const response = await axiosWithConfig.get("/admin/order/batch");
+    return response.data as Response<IOrderProcessBatch[]>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const getOrdersProcessCustomersByAdmin = async (code: string, batch: string) => {
+  try {
+    const response = await axiosWithConfig.get(`/admin/order/name/?code=${code}&batch=${batch}`);
+    return response.data as Response<IOrdersProcessCustomers>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const getOrdersProcessCustomerOrdersByAdmin = async (
+  code: string,
+  batch: string,
+  customerName: string
+) => {
+  try {
+    const response = await axiosWithConfig.get(
+      `/admin/order/name/orders?code=${code}&batch=${batch}&name=${customerName}`
+    );
+    return response.data as Response<IOrdersProcess>;
   } catch (error: any) {
     throw Error(error.response.data.message);
   }
@@ -58,6 +106,17 @@ export const updateOrder = async (orderId: string, body: IOrderType) => {
 export const updateOrderByAdminJakarta = async (orderId: string, body: IOrderAdminJakartaType) => {
   try {
     const response = await axiosWithConfig.post("/admin/order/" + orderId, body);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+export const updateStatusOrderByAdminPerwakilan = async (
+  orderId: string,
+  body: { status: string }
+) => {
+  try {
+    const response = await axiosWithConfig.put("/admin/order/status/" + orderId, body);
     return response.data as Response<{}>;
   } catch (error: any) {
     throw Error(error.response.data.message);

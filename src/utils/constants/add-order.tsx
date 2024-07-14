@@ -79,3 +79,57 @@ export const FORM_ADD_BATCH = [
     placeholder: "Batch",
   },
 ];
+export const FORM_REGION_CODE = [
+  {
+    label: "Nama admin jakarta",
+    formName: "admin_jakarta_name",
+    placeholder: "Ami citayam",
+  },
+  {
+    label: "Email",
+    formName: "email",
+    placeholder: "amicitayama@gmail.com",
+  },
+  {
+    label: "Nomor telepon whatsapp",
+    formName: "phone_number",
+    placeholder: "628xxxxxxx",
+  },
+  {
+    label: "Kode",
+    formName: "code",
+    placeholder: "BB11",
+  },
+  {
+    label: "Wilayah",
+    formName: "region",
+    placeholder: "BAUBAU",
+  },
+  {
+    label: "Alamat",
+    formName: "address",
+    placeholder: "Jln. Sultan Labuke no. 27, Keraton (Kedai Kopi Galampa Tana)",
+  },
+  {
+    label: "Harga kode wilayah",
+    formName: "price",
+    placeholder: "11000",
+  },
+];
+export const FORM_ADD_USER = [
+  {
+    label: "Nama user",
+    formName: "name",
+    placeholder: "Ami citayam",
+  },
+  {
+    label: "Email",
+    formName: "email",
+    placeholder: "amiciayam@gmail.com",
+  },
+  {
+    label: "Nomor telepon whatsapp",
+    formName: "phone_number",
+    placeholder: "628xxxxxxx",
+  },
+];

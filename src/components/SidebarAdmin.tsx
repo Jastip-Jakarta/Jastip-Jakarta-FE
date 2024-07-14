@@ -1,11 +1,11 @@
 import { SIDEBAR_ADMIN_SUPER } from "@/utils/constants/sidebar";
 import { useAuth } from "@/utils/context/auth";
-import { PanelLeftClose, PanelLeftOpen, PanelRightClose, Pencil, X } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Pencil } from "lucide-react";
 import EditProfile from "./EditProfile";
 import { updateProfileUser } from "@/utils/apis/user/api";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import profileImg from "../../public/images/profilejpg.jpg";
 interface SidebarProps {
@@ -16,6 +16,7 @@ interface SidebarProps {
 const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
   const navigate = useNavigate();
   const { user, changeToken } = useAuth();
+  const { pathname } = useLocation();
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
   const [isLoadingUpload, setIsLoadingUpload] = useState(false);
 
@@ -79,7 +80,7 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                 <img
                   src={user.photo_profile ? user.photo_profile : profileImg}
                   alt="profile_image"
-                  className={`size-40 rounded-full border object-cover`}
+                  className={`size-32 rounded-full border object-cover`}
                 />
                 <Pencil className="absolute bottom-0 right-2" />
               </label>
@@ -91,7 +92,7 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                   onUpdateImage(e);
                 }}
               />
-              <h3 className="text-2xl font-semibold">Halo, {user.name}</h3>
+              <h3 className="text-xl font-semibold">Halo, {user.name}</h3>
             </div>
           ) : (
             <img
@@ -110,40 +111,43 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                   return (
                     <div
                       key={value?.title}
-                      className={`flex items-center ${
-                        !isOpen ? "justify-center" : "justify-start"
-                      } gap-5 hover:bg-black/10 rounded-sm cursor-pointer py-2 duration-200 min-w-14`}
+                      className={`flex items-center
+                         ${!isOpen ? "justify-center" : "justify-start"}
+                        ${pathname === value.path ? "font-semibold bg-slate-200" : "font-normal"}
+                         gap-5 hover:bg-slate-200 rounded-md cursor-pointer py-2 duration-200 min-w-14 px-2`}
                       onClick={() => {
                         switch (value && value.title) {
-                          case "Keluar":
-                            onLogout();
-                            break;
                           case "Admin":
                             if (!isOpen) {
                               setIsOpen(true);
                             }
                             setIsOpenEditProfile(true);
-
                             break;
-                          case "Orderan saya":
-                            navigate("/orders");
-                            setIsOpen(false);
-                            break;
-                          case "Orderan jastip":
+                          case "Orderan Jastip":
                             navigate("/admin/orders");
-                            setIsOpen(false);
+                            break;
+                          case "Dashboard":
+                            navigate("/admin/dashboard");
+                            break;
+                          case "Batch Pengiriman":
+                            navigate("/admin/batch-pengiriman");
                             break;
                           case "Kode wilayah":
-                            navigate("/kode-wilayah");
+                            navigate("/admin/kode-wilayah");
                             break;
-
+                          case "Users":
+                            navigate("/admin/users");
+                            break;
+                          case "Keluar":
+                            onLogout();
+                            break;
                           default:
                             break;
                         }
                       }}
                     >
                       {value?.icon("size-10")}
-                      {isOpen ? <span className="text-lg">{value?.title}</span> : null}
+                      {isOpen ? <span className={`text-base`}>{value?.title}</span> : null}
                     </div>
                   );
                 })}

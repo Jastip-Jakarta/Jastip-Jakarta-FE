@@ -74,5 +74,22 @@ export interface IOrdersProcessItem {
   tracking_number_jastip: string;
   tracking_number: string;
   online_store: string;
-  WeightItem: number;
+  weight_item: number;
+}
+
+export interface IOrderProcessBatch {
+  delivery_batch: string;
+  region_code: {
+    code: string;
+    region: string;
+  }[];
+}
+export interface IOrdersProcessCustomers {
+  delivery_batch: string;
+  code: string;
+  region: string;
+  estimasi: string;
+  customer_jastip: {
+    name: string;
+  }[];
 }
