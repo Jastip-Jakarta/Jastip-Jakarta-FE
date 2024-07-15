@@ -85,32 +85,32 @@ const Dashboard = () => {
             {dummyData.map((value) => (
               <div className="bg-slate-50 border p-3 rounded shadow space-y-2 text-sm font-medium">
                 <div className="flex flex-row">
-                  <span className="basis-3/4 font-semibold">Kode wilayah :</span>
+                  <span className="basis-3/4 font-semibold">Kode wilayah</span>
                   <span className="basis-2.5">:</span>
                   <span>{value.kodeWilayah}</span>
                 </div>
                 <div className="flex flex-row">
-                  <span className="basis-3/4 font-semibold">harga per kode wilayah :</span>
+                  <span className="basis-3/4 font-semibold">harga per kode wilayah</span>
                   <span className="basis-2.5">:</span>
                   <span>{value["Harga Per Kode Wilayah"]}</span>
                 </div>
                 <div className="flex flex-row">
-                  <span className="basis-3/4 font-semibold">total user dalam batch :</span>
+                  <span className="basis-3/4 font-semibold">total user dalam batch</span>
                   <span className="basis-2.5">:</span>
                   <span>{value["Total User Dalam Batch"]}</span>
                 </div>
                 <div className="flex flex-row">
-                  <span className="basis-3/4 font-semibold">total order dalam batch :</span>
+                  <span className="basis-3/4 font-semibold">total order dalam batch</span>
                   <span className="basis-2.5">:</span>
                   <span>{value["Total Order Dalam Batch"]}</span>
                 </div>
                 <div className="flex flex-row">
-                  <span className="basis-3/4 font-semibold">total berat dalam batch :</span>
+                  <span className="basis-3/4 font-semibold">total berat dalam batch</span>
                   <span className="basis-2.5">:</span>
                   <span>{value["Total Berat Dalam Batch"]}</span>
                 </div>
                 <div className="flex flex-row">
-                  <span className="basis-3/4 font-semibold">total harga dalam batch :</span>
+                  <span className="basis-3/4 font-semibold">total harga dalam batch</span>
                   <span className="basis-2.5">:</span>
                   <span>{value["Total Harga Dalam Batch"]}</span>
                 </div>

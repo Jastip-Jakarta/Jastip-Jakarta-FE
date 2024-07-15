@@ -8,3 +8,9 @@ export interface IAdmin {
   create_account: string;
   last_update: string;
 }
+
+export interface UploadImgPayload {
+  delivery_batch_id: string;
+  user_order_ids: number[];
+  photo_packed: File;
+}

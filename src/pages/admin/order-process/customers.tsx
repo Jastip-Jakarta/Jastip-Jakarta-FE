@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createEstimatedOrders } from "@/utils/apis/admin/api";
 import { getOrdersProcessCustomersByAdmin } from "@/utils/apis/order/api";
 import { IOrdersProcessCustomers } from "@/utils/apis/order/types";
 import { ChevronLeft, SquareArrowOutUpRight } from "lucide-react";
@@ -32,7 +33,27 @@ const Customers = () => {
   const onClickCustomerName = (batch: string, code: string, name: string) => {
     navigate(`/customer-orders/${batch}/${code}/${name}`);
   };
-
+  const onCreateEstimasi = async (e: any) => {
+    e.preventDefault();
+    try {
+      const tanggal = e.target[0].value;
+      const bulan = e.target[1].value;
+      const tahun = e.target[2].value;
+      if (!tanggal || !bulan || !tahun) {
+        toast.error("Estimasi tidak valid");
+        return;
+      }
+      const date = `${tanggal}/${bulan}/${tahun}`;
+      const result = await createEstimatedOrders(
+        date,
+        ordersProcessCustomers?.code!,
+        ordersProcessCustomers?.delivery_batch!
+      );
+      toast.success(result.message);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
   return (
     <Layout>
       <div className=" pt-3 px-5 space-y-6 ">
@@ -58,9 +79,28 @@ const Customers = () => {
             <div className="w-full space-y-1">
               <h4 className="text-sm font-semibold">Estimasi Tiba</h4>
 
-              <form className="flex gap-4 items-center">
-                <Input defaultValue={estimasi ?? "-"} className="min-h-9 h-9" />
-                <Button size={"xs"} className="uppercase min-w-32 text-sm font-medium">
+              <form onSubmit={onCreateEstimasi} className="flex gap-4 items-center">
+                <div className="flex items-center bg-white rounded-md">
+                  <Input
+                    placeholder="tanggal"
+                    className="bg-transparent shadow-none ring-0 border-none"
+                  />
+                  /
+                  <Input
+                    placeholder="bulan"
+                    className="bg-transparent shadow-none ring-0 border-none"
+                  />
+                  /
+                  <Input
+                    placeholder="tahun"
+                    className="bg-transparent shadow-none ring-0 border-none"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  size={"xs"}
+                  className="uppercase max-w-32 text-xs font-medium"
+                >
                   Simpan
                 </Button>
               </form>
@@ -68,8 +108,9 @@ const Customers = () => {
           </div>
 
           <div className="flex flex-col gap-3 w-full">
-            {ordersProcessCustomers?.customer_jastip.map((customer) => (
+            {ordersProcessCustomers?.customer_jastip.map((customer, index) => (
               <div
+                key={index}
                 className="bg-white rounded-md flex justify-between items-center w-full px-4 py-3 cursor-pointer"
                 onClick={() =>
                   onClickCustomerName(

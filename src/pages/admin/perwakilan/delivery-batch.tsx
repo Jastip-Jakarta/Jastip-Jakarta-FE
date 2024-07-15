@@ -47,12 +47,21 @@ const DeliveryBatch = () => {
       toast.error(error.message);
     }
   });
+
+  const onDownloadCsv = async (batch: string) => {
+    try {
+      window.location.href = `${import.meta.env.VITE_BASE_URL}/download/csv?batch=${batch}`;
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <Layout>
       <div className="pb-20 pt-3 px-5 space-y-6 ">
         <h1 className="font-bold text-2xl">Batch Pengiriman</h1>
         {batchs?.map((batch) => (
-          <CardDeliveryBatch batch={batch} key={batch.batch} />
+          <CardDeliveryBatch batch={batch} key={batch.batch} onDownload={onDownloadCsv} />
         ))}
       </div>
 

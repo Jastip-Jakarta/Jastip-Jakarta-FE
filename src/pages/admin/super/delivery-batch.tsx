@@ -13,8 +13,10 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const DeliveryBatchAdminSuper = () => {
+  const navigate = useNavigate();
   const [batchs, setBatchs] = useState<IBatch[]>();
   const [isOpenAddBatch, setIsOpenAddBatch] = useState(false);
 
@@ -49,6 +51,15 @@ const DeliveryBatchAdminSuper = () => {
       toast.error(error.message);
     }
   });
+
+  const onDownloadCsv = async (batch: string) => {
+    try {
+      window.location.href = `${import.meta.env.VITE_BASE_URL}/download/csv?batch=${batch}`;
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <LayoutAdmin>
       <div className="space-y-10 max-w-5xl mx-auto">
@@ -89,7 +100,7 @@ const DeliveryBatchAdminSuper = () => {
         </div>
         <div className="grid grid-cols-2 gap-6">
           {batchs?.map((batch) => (
-            <CardDeliveryBatch batch={batch} key={batch.batch} />
+            <CardDeliveryBatch batch={batch} key={batch.batch} onDownload={onDownloadCsv} />
           ))}
         </div>
       </div>

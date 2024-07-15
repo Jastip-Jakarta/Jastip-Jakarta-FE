@@ -1,7 +1,13 @@
 import { IBatch } from "@/utils/apis/batch/types";
 import { Button } from "../ui/button";
 
-const CardDeliveryBatch = ({ batch }: { batch: IBatch }) => {
+const CardDeliveryBatch = ({
+  batch,
+  onDownload,
+}: {
+  batch: IBatch;
+  onDownload: (batch: string) => void;
+}) => {
   return (
     <div className="bg-white px-3 py-4 rounded-md w-full space-y-3 shadow-sm border">
       <div className="flex items-start justify-between">
@@ -9,7 +15,11 @@ const CardDeliveryBatch = ({ batch }: { batch: IBatch }) => {
           <h3 className="uppercase font-bold text-base">Batch pengiriman</h3>
           <h3 className="font-semibold text-base tracking-wide">{batch.delivery_batch}</h3>
         </div>
-        <Button size={"xs"} className="!text-[11px] rounded-full font-semibold">
+        <Button
+          size={"xs"}
+          className="!text-[11px] rounded-full font-semibold"
+          onClick={() => onDownload(batch.delivery_batch)}
+        >
           DOWNLOAD CSV
         </Button>
       </div>
