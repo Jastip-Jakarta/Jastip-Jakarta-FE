@@ -2,13 +2,7 @@ import Layout from "@/components/Layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Info } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FORM_ORDER } from "@/utils/constants/add-order";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -20,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import informasiJastip from "../../../public/images/informasi-jastip.png";
 const AddOrder = () => {
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,

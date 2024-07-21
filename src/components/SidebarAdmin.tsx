@@ -62,15 +62,9 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
         <div className={` flex flex-col items-center justify-center min-h-full gap-10 relative`}>
           {/* Button hide */}
           {isOpen ? (
-            <PanelLeftClose
-              className="absolute top-4 right-4 size-8 cursor-pointer"
-              onClick={onHideSide}
-            />
+            <PanelLeftClose className="absolute top-4 right-4 size-8 cursor-pointer" onClick={onHideSide} />
           ) : (
-            <PanelLeftOpen
-              className="absolute top-4 right-4 size-8 cursor-pointer"
-              onClick={onHideSide}
-            />
+            <PanelLeftOpen className="absolute top-4 right-4 size-8 cursor-pointer" onClick={onHideSide} />
           )}
 
           {/* Profile section */}
@@ -92,7 +86,7 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                   onUpdateImage(e);
                 }}
               />
-              <h3 className="text-xl font-semibold">Halo, {user.name}</h3>
+              <h3 className="text-xl font-semibold">{user.name && `Halo, ${user.name}`}</h3>
             </div>
           ) : (
             <img

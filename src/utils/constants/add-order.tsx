@@ -3,10 +3,18 @@ export const OPTIONS = {
     string,
     ...string[]
   ],
-  kodeWilayah: ["BB11", "BB12", "BB13", "BB14", "BB15", "BB31", "BB21", "BB22", "BB23", "BB24"] as [
-    string,
-    ...string[]
-  ],
+  kodeWilayah: [
+    "BB11 - Baubau",
+    "BB12 - Baubau",
+    "BB13 - Baubau",
+    "BB14 - Baubau",
+    "BB15 - Baubau",
+    "BB31 - Buton",
+    "BB21 - Buton Tengah",
+    "BB22 - Buton Tengah",
+    "BB23 - Buton Tengah",
+    "BB24 - Buton Tengah",
+  ] as [string, ...string[]],
 };
 
 export const FORM_ORDER = [
@@ -81,18 +89,13 @@ export const FORM_ADD_BATCH = [
 ];
 export const FORM_REGION_CODE = [
   {
-    label: "Nama admin jakarta",
-    formName: "admin_jakarta_name",
-    placeholder: "Ami citayam",
-  },
-  {
-    label: "Email",
-    formName: "email",
-    placeholder: "amicitayama@gmail.com",
+    label: "Nama admin perwakilan",
+    formName: "admin_id_perwakilan",
+    placeholder: "Pilih admin perwakilan",
   },
   {
     label: "Nomor telepon whatsapp",
-    formName: "phone_number",
+    formName: "phone",
     placeholder: "628xxxxxxx",
   },
   {
@@ -107,7 +110,7 @@ export const FORM_REGION_CODE = [
   },
   {
     label: "Alamat",
-    formName: "address",
+    formName: "full_address",
     placeholder: "Jln. Sultan Labuke no. 27, Keraton (Kedai Kopi Galampa Tana)",
   },
   {

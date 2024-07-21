@@ -21,14 +21,36 @@ export const getOrdersByAdmin = async () => {
   }
 };
 
+export const getAdminPerwakilan = async () => {
+  try {
+    const response = await axiosWithConfig.get("/admin/perwakilan");
+    return response.data as Response<IAdmin[]>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
 export const uploadImgAdminJ = async (body: UploadImgPayload) => {
   try {
     const formData = new FormData();
-    formData.append("delivery_batch_id", body.delivery_batch_id);
-    formData.append("user_order_ids", JSON.stringify(body.user_order_ids));
+    formData.append("code", body.code);
+    formData.append("batch", body.batch);
+    formData.append("user_id", body.user_id);
     formData.append("photo_packed", body.photo_packed);
 
     const response = await axiosWithConfig.post("/admin/foto", formData);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const uploadImgAdminP = async (body: { photo_received: string }) => {
+  try {
+    const formData = new FormData();
+    formData.append("photo_received", body.photo_received);
+
+    const response = await axiosWithConfig.put("/admin/foto/2", formData);
     return response.data as Response<{}>;
   } catch (error: any) {
     throw Error(error.response.data.message);

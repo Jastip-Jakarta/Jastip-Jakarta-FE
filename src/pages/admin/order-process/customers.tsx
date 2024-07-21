@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const Customers = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const [estimasi, setEstimasi] = useState<string>();
+  // const [estimasi, setEstimasi] = useState<string>();
   const [ordersProcessCustomers, setOrdersProcessCustomers] = useState<IOrdersProcessCustomers>();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Customers = () => {
     try {
       const result = await getOrdersProcessCustomersByAdmin(code, batch);
       setOrdersProcessCustomers(result.data);
-      setEstimasi(result.data.estimasi);
+      // setEstimasi(result.data.estimasi);
     } catch (error: any) {
       navigate("/orders");
       toast.error(error.message);

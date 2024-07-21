@@ -13,10 +13,8 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const DeliveryBatchAdminSuper = () => {
-  const navigate = useNavigate();
   const [batchs, setBatchs] = useState<IBatch[]>();
   const [isOpenAddBatch, setIsOpenAddBatch] = useState(false);
 

@@ -79,6 +79,7 @@ const DetailOrder = () => {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<IOrderType>({ resolver: zodResolver(orderSchema) });
+
   const onSubmitUpdateOrder = handleSubmit(async (body: IOrderType) => {
     try {
       const result = await updateOrder(orderId as string, body);
@@ -231,7 +232,9 @@ const DetailOrder = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {form.options.map((option) => (
-                            <SelectItem value={option}>{option}</SelectItem>
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -258,7 +261,7 @@ const DetailOrder = () => {
                 <>
                   <h1 className="font-bold text-xl">FORM ADMIN JAKARTA</h1>
                   {FORM_ORDER_ADMIN_JAKARTA.map((form) => (
-                    <div className="space-y-1">
+                    <div key={form.label} className="space-y-1">
                       {form.label !== "Batch Pengiriman" ? (
                         <>
                           <Label>{form.label}</Label>

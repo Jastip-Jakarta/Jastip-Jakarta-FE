@@ -1,5 +1,5 @@
 import { OPTIONS } from "@/utils/constants/add-order";
-import { INFO_STATUS } from "@/utils/constants/info-status";
+
 import { z } from "zod";
 
 export const orderSchema = z.object({
@@ -55,16 +55,18 @@ export interface IOrders {
 }
 
 export interface IOrdersProcess {
-  code: string;
   delivery_batch: string;
-  estimasi: string;
-  orders: IOrdersProcessItem[];
-  package_received_photo: string;
-  package_wrapped_photo: string;
-  region: string;
-  total_order: number;
-  total_price: number;
-  total_weight: number;
+  detail_orders: {
+    code: string;
+    estimasi: string;
+    orders: IOrdersProcessItem[];
+    package_received_photo: string;
+    package_wrapped_photo: string;
+    region: string;
+    total_order: number;
+    total_price: number;
+    total_weight: number;
+  }[];
 }
 export interface IOrdersProcessItem {
   order_id: number;
@@ -90,6 +92,23 @@ export interface IOrdersProcessCustomers {
   region: string;
   estimasi: string;
   customer_jastip: {
+    id: string;
     name: string;
   }[];
+}
+export interface IOrdersProcessCustomerOrders {
+  delivery_batch: string;
+  code: string;
+  estimasi: string;
+  orders: IOrdersProcessItem[];
+  package_received_photo: string;
+  package_wrapped_photo: string;
+  region: string;
+  total_order: number;
+  total_price: number;
+  total_weight: number;
+  customer_jastip: {
+    id: string;
+    name: string;
+  };
 }

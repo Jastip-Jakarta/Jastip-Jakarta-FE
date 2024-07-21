@@ -1,8 +1,14 @@
 import { IRegion } from "@/utils/apis/region-code/types";
 
-const CardRegionCodeAdmin = ({ region }: { region: IRegion }) => {
+const CardRegionCodeAdmin = ({
+  region,
+  ...props
+}: {
+  region: IRegion;
+  [propName: string]: any;
+}) => {
   return (
-    <div className="px-4 py-3 bg-white rounded-md space-y-2 text-sm cursor-pointer">
+    <div className="px-4 py-3 bg-white rounded-md space-y-2 text-sm cursor-pointer" {...props}>
       <h2 className="font-semibold text-xl">{region.code}</h2>
       <div className="flex flex-row font-medium gap-x-3">
         <span className="font-semibold">Wilayah</span>

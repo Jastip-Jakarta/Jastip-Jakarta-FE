@@ -11,7 +11,14 @@ export const getRegions = async () => {
   }
 };
 
-export const getRegion = async () => {};
+export const getRegion = async (code: string) => {
+  try {
+    const response = await axiosWithConfig.get(`/region/${code}`);
+    return response.data as Response<IRegion>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
 export const createRegion = async (body: RegionPayload) => {
   try {
     const response = await axiosWithConfig.post("admin/region", body);

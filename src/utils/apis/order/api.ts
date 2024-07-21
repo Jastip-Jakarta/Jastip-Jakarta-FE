@@ -5,6 +5,7 @@ import {
   IOrderProcessBatch,
   IOrders,
   IOrdersProcess,
+  IOrdersProcessCustomerOrders,
   IOrdersProcessCustomers,
   IOrderType,
 } from "./types";
@@ -80,7 +81,7 @@ export const getOrdersProcessCustomerOrdersByAdmin = async (
     const response = await axiosWithConfig.get(
       `/admin/order/name/orders?code=${code}&batch=${batch}&name=${customerName}`
     );
-    return response.data as Response<IOrdersProcess>;
+    return response.data as Response<IOrdersProcessCustomerOrders>;
   } catch (error: any) {
     throw Error(error.response.data.message);
   }
@@ -111,10 +112,7 @@ export const updateOrderByAdminJakarta = async (orderId: string, body: IOrderAdm
     throw Error(error.response.data.message);
   }
 };
-export const updateStatusOrderByAdminPerwakilan = async (
-  orderId: string,
-  body: { status: string }
-) => {
+export const updateStatusOrderByAdminPerwakilan = async (orderId: string, body: { status: string }) => {
   try {
     const response = await axiosWithConfig.put("/admin/order/status/" + orderId, body);
     return response.data as Response<{}>;

@@ -3,13 +3,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ILoginType, LoginSchema } from "@/utils/apis/auth/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC, PropsWithChildren, useState } from "react";
+import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Login as LoginAction } from "@/utils/apis/auth/api";
 import { useAuth } from "@/utils/context/auth";
 import { Navigate } from "react-router-dom";
-import { Modal } from "@/components/Modal";
 import InputPassword from "@/components/InputPassword";
 
 const Login: FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -65,10 +64,7 @@ const Login: FC<{ onClose: () => void }> = ({ onClose }) => {
           </span>
           <p className="text-[13px]">
             kalau kamu belum memiliki akun silahkan daftar disini{" "}
-            <span
-              className="font-bold underline underline-offset-4 cursor-pointer"
-              onClick={onClose}
-            >
+            <span className="font-bold underline underline-offset-4 cursor-pointer" onClick={onClose}>
               disini
             </span>
           </p>

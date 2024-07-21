@@ -38,11 +38,14 @@ const RegionCode = () => {
       <div className="flex flex-col items-center gap-4 p-4">
         {regions?.map((region) => (
           <div className="bg-white max-w-md px-3 py-4 rounded-md w-full space-y-3 shadow-sm border">
-            <div>
-              <h4 className="font-bold text-sm">Kode Wilayah</h4>
-              <h3 className="font-bold text-lg">
-                {region.code} - {region.region}
-              </h3>
+            <div className="flex items-start w-full justify-between pr-4">
+              <div>
+                <h4 className="font-bold text-sm">Kode Wilayah</h4>
+                <h3 className="font-bold text-lg">
+                  {region.code} - {region.region}
+                </h3>
+              </div>
+              <h4 className="font-medium text-sm">Harga : Rp. {region.price.toLocaleString()}</h4>
             </div>
             <div>
               <h5 className="font-bold text-sm">Alamat</h5>

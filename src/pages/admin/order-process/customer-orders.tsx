@@ -1,18 +1,21 @@
 import Card from "@/components/Card/Card";
 import Layout from "@/components/Layout";
-import { uploadImgAdminJ } from "@/utils/apis/admin/api";
+import Loading from "@/components/Loading";
+import { uploadImgAdminJ, uploadImgAdminP } from "@/utils/apis/admin/api";
 import { getOrdersProcessCustomerOrdersByAdmin } from "@/utils/apis/order/api";
-import { IOrdersProcess } from "@/utils/apis/order/types";
+import { IOrdersProcessCustomerOrders } from "@/utils/apis/order/types";
+import { useAuth } from "@/utils/context/auth";
 import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
 const CustomerOrders = () => {
+  const { user } = useAuth();
   const params = useParams();
   const navigate = useNavigate();
-  const [ordersCustomer, setOrdersCustomer] = useState<IOrdersProcess>();
-  console.log(ordersCustomer);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ordersCustomer, setOrdersCustomer] = useState<IOrdersProcessCustomerOrders>();
 
   useEffect(() => {
     fetchOrdersProcessCustomers(params.batch!, params.code!, params.customerName!);
@@ -29,20 +32,37 @@ const CustomerOrders = () => {
   };
 
   const onSubmitUploadImgAdminJ = async (e: any) => {
-    const orderIds = ordersCustomer?.orders.map((order) => order.order_id);
     try {
+      setIsLoading(true);
       const result = await uploadImgAdminJ({
+        code: ordersCustomer?.code!,
+        batch: ordersCustomer?.delivery_batch!,
+        user_id: ordersCustomer?.customer_jastip.id!,
         photo_packed: e.target.files[0],
-        user_order_ids: orderIds!,
-        delivery_batch_id: ordersCustomer?.delivery_batch as string,
       });
       toast.success(result.message);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const onSubmitUploadImgAdminP = async (e: any) => {
+    try {
+      setIsLoading(true);
+      const result = await uploadImgAdminP({
+        photo_received: e.target.files[0],
+      });
+      toast.success(result.message);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
     <Layout>
+      {isLoading && <Loading />}
       <div className=" py-3 px-5 space-y-6 ">
         <div className="bg-[#FCCA8F] rounded-[6px] px-4 pt-3 pb-16 space-y-5 flex flex-col items-start">
           <div className="flex items-center gap-4">
@@ -52,9 +72,7 @@ const CustomerOrders = () => {
             />
             <div>
               <h1 className="uppercase font-bold text-base text-slate-800">Batch Pengiriman</h1>
-              <span className="text-base font-semibold -mt-5">
-                {ordersCustomer?.delivery_batch}
-              </span>
+              <span className="text-base font-semibold -mt-5">{ordersCustomer?.delivery_batch}</span>
             </div>
           </div>
 
@@ -64,8 +82,7 @@ const CustomerOrders = () => {
 
           {ordersCustomer?.estimasi ? (
             <p className="leading-relaxed text-sm">
-              estimasi tiba <span className="font-semibold">{ordersCustomer?.estimasi}</span> di
-              admin jakarta
+              estimasi tiba <span className="font-semibold">{ordersCustomer?.estimasi}</span> di admin jakarta
             </p>
           ) : null}
 
@@ -82,7 +99,12 @@ const CustomerOrders = () => {
               <div className="font-bold text-sm">
                 <h4>Photo paket dikemas admin jakarta</h4>
                 <div className="space-x-4">
-                  <label htmlFor="uploadImgAdminJ" className="text-[#0065FD]">
+                  <label
+                    htmlFor="uploadImgAdminJ"
+                    className={`${
+                      user.role === "Jakarta" ? "text-[#0065FD] cursor-pointer" : "text-slate-500"
+                    }`}
+                  >
                     upload disini
                   </label>
                   <input
@@ -90,16 +112,43 @@ const CustomerOrders = () => {
                     hidden
                     id="uploadImgAdminJ"
                     onChange={onSubmitUploadImgAdminJ}
+                    disabled={user.role !== "Jakarta"}
                   />
 
-                  <span className="text-red-500">hapus</span>
+                  <span
+                    className={`${
+                      user.role === "Jakarta" ? "text-red-500 cursor-pointer" : "text-slate-500"
+                    }`}
+                  >
+                    hapus
+                  </span>
                 </div>
               </div>
               <div className="font-bold text-sm">
                 <h4>Photo paket diterima admin perwakilan</h4>
                 <div className="space-x-4">
-                  <span className="text-[#0065FD]">upload disini</span>
-                  <span className="text-red-500">hapus</span>
+                  <label
+                    htmlFor="uploadImgAdminP"
+                    className={`${
+                      user.role === "Perwakilan" ? "text-[#0065FD] cursor-pointer" : "text-slate-500"
+                    }`}
+                  >
+                    upload disini
+                  </label>
+                  <input
+                    type="file"
+                    hidden
+                    id="uploadImgAdminP"
+                    onChange={onSubmitUploadImgAdminP}
+                    disabled={user.role !== "Perwakilan"}
+                  />
+                  <span
+                    className={`${
+                      user.role === "Perwakilan" ? "text-red-500 cursor-pointer" : "text-slate-500"
+                    }`}
+                  >
+                    hapus
+                  </span>
                 </div>
               </div>
               <div className="flex justify-between text-sm">

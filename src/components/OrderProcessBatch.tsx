@@ -8,14 +8,9 @@ interface OrderProcessBatchProps {
   setIsOpen: (condition: string | null) => void;
 }
 
-const OrderProcessBatch = ({
-  batch,
-  onClickRegionCode,
-  isOpen,
-  setIsOpen,
-}: OrderProcessBatchProps) => {
+const OrderProcessBatch = ({ batch, onClickRegionCode, isOpen, setIsOpen }: OrderProcessBatchProps) => {
   return (
-    <div className="bg-[#FCCA8F] rounded-[6px] px-4 py-3 space-y-3 relative ">
+    <div className="bg-[#FCCA8F] rounded-[6px] px-4 py-3 space-y-3 relative w-full ">
       <ChevronRight
         className={`absolute right-3 top-5 size-8  text-slate-800 cursor-pointer duration-200 ${
           isOpen === batch.delivery_batch ? "rotate-90" : "rotate-0"
