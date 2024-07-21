@@ -1,4 +1,4 @@
 [[redirects]]
   from = "/admin/login"
   to = "/admin/login"
-  status = 200
+  status = 404
