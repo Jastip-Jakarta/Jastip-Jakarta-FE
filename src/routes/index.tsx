@@ -54,33 +54,28 @@ const App = () => {
           element: <DeliveryBatch />,
         },
         {
-          path: "/admin",
-          children: [
-            {
-              path: "dashboard",
-              element: <Dashboard />,
-            },
-            {
-              path: "orders",
-              element: <OrdersAdminS />,
-            },
-            {
-              path: "batch-pengiriman",
-              element: <DeliveryBatchAdminSuper />,
-            },
-            {
-              path: "kode-wilayah",
-              element: <RegionCodeAdminSuper />,
-            },
-            {
-              path: "users",
-              element: <Users />,
-            },
-            {
-              path: "login",
-              element: <LoginAdmin />,
-            },
-          ],
+          path: "/admin/dashboard",
+          element: <Dashboard />,
+        },
+        {
+          path: "/admin/orders",
+          element: <OrdersAdminS />,
+        },
+        {
+          path: "/admin/batch-pengiriman",
+          element: <DeliveryBatchAdminSuper />,
+        },
+        {
+          path: "/admin/kode-wilayah",
+          element: <RegionCodeAdminSuper />,
+        },
+        {
+          path: "/admin/users",
+          element: <Users />,
+        },
+        {
+          path: "/admin/login",
+          element: <LoginAdmin />,
         },
       ],
     },
