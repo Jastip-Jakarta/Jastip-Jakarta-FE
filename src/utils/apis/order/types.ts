@@ -1,7 +1,10 @@
 import { OPTIONS } from "@/utils/constants/add-order";
 
 import { z } from "zod";
-
+const optionsRegionCode = OPTIONS.kodeWilayah.map((option) => option.split("-")[0].replace(" ", "")) as [
+  string,
+  ...string[]
+];
 export const orderSchema = z.object({
   item_name: z.string().min(1, { message: "Masukkan nama barang/titipan anda" }),
   tracking_number: z.string().min(1, { message: "Masukkan nomor resi anda" }),
@@ -23,7 +26,7 @@ export const orderSchema = z.object({
       return parsed;
     })
     .or(z.number()),
-  code: z.enum([...OPTIONS.kodeWilayah], {
+  code: z.enum([...optionsRegionCode], {
     message: "Masukkan kode wilayah anda",
   }),
 });

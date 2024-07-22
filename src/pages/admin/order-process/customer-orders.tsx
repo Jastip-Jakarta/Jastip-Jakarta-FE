@@ -63,8 +63,8 @@ const CustomerOrders = () => {
   return (
     <Layout>
       {isLoading && <Loading />}
-      <div className=" py-3 px-5 space-y-6 ">
-        <div className="bg-[#FCCA8F] rounded-[6px] px-4 pt-3 pb-16 space-y-5 flex flex-col items-start">
+      <div className=" py-3 px-2.5 space-y-6 ">
+        <div className="bg-[#FCCA8F] rounded-[6px] px-2.5 pt-3 pb-16 space-y-5 flex flex-col items-start">
           <div className="flex items-center gap-4">
             <ChevronLeft
               className={`size-9 text-slate-800 cursor-pointer duration-200 `}

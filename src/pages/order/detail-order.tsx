@@ -4,13 +4,7 @@ import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getBatch } from "@/utils/apis/batch/api";
 import { IBatch } from "@/utils/apis/batch/types";
 import {
@@ -136,7 +130,7 @@ const DetailOrder = () => {
 
   return (
     <Layout>
-      <div className="py-3 px-5 ">
+      <div className="py-3 px-2.5 ">
         <form
           onSubmit={
             user.role === "Jakarta"
@@ -335,8 +329,8 @@ const DetailOrder = () => {
                     <div className="space-y-4">
                       <h1 className="font-bold text-xl uppercase text-center">pilih status</h1>
                       <p className="text-center text-[13px]">
-                        hati-hati dalam mengubah status mengubah status dapat otomatis mengirimkan
-                        pesan whatsapp kepada penerima.
+                        hati-hati dalam mengubah status mengubah status dapat otomatis mengirimkan pesan
+                        whatsapp kepada penerima.
                       </p>
                       <div className="space-y-6 w-5/6 mx-auto bg-slate-50 py-6 px-8 border rounded-sm">
                         {INFO_STATUS.map((info, index) => (

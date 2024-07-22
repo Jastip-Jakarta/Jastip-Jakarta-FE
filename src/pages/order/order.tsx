@@ -98,8 +98,8 @@ const Order = () => {
 
   return (
     <Layout>
-      <div className="pb-20 pt-3 px-5 space-y-6 ">
-        <h1 className="font-bold text-2xl">Order Titipan kamu</h1>
+      <div className="pb-20 pt-3 px-2.5 sm:px-3 space-y-6">
+        <h1 className="font-bold text-2xl ms-1">Order Titipan kamu</h1>
         {/*SECTION SEARCH */}
         <SearchOrder onSubmit={handleSearchUserOrders} setKeyword={setKeyword} />
 
@@ -111,131 +111,122 @@ const Order = () => {
             {/*SECTION CONTENT */}
             {tab === "wait" ? (
               // ORDERS WAIT
-              <>
-                <div className="relative min-h-[100px] flex justify-center items-center gap-2 bg-white px-4 py-2 rounded-md ">
-                  <h3 className="uppercase font-bold absolute top-2 left-4">menunggu diterima admin</h3>
-                  <div
-                    className={`py-10 ${orders?.length ? "gap-12" : "gap-2"} flex-col items-center ${
-                      isOpenWait ? "flex" : "hidden"
-                    } w-full`}
-                  >
-                    {!user.role && !orders?.length ? (
-                      <>
-                        <img src={packageIcon} alt="package-icon" />
-                        <p className="font-semibold -mt-3 text-sm">kamu belum memiliki orderan jastip</p>
-                        <PlusCircle
-                          className="size-10 mt-5 cursor-pointer"
-                          onClick={() => navigate("/order")}
-                        />
-                        <p className="font-semibold  text-sm">Tambahkan Orderan Jastip</p>
-                      </>
-                    ) : (
-                      <>
-                        {orders?.map((order, index) => (
-                          <Card
-                            key={index}
-                            order={order}
-                            onActionSelengkapnya={() => navigate(`/order/${order?.order_id}`)}
-                          />
-                        ))}
-                      </>
-                    )}
+              <div className="relative min-h-[100px] flex justify-center items-center gap-2 bg-white px-3 py-2 rounded-md">
+                <h3 className="uppercase font-bold absolute top-2.5 left-4">menunggu diterima admin</h3>
+                <div
+                  className={`py-10 ${orders?.length ? "gap-12" : "gap-2"} flex-col items-center ${
+                    isOpenWait ? "flex" : "hidden"
+                  } w-full`}
+                >
+                  {!user.role && !orders?.length ? (
+                    <>
+                      <img src={packageIcon} alt="package-icon" />
+                      <p className="font-semibold -mt-3 text-sm">kamu belum memiliki orderan jastip</p>
+                      <PlusCircle
+                        className="size-10 mt-5 cursor-pointer"
+                        onClick={() => navigate("/order")}
+                      />
+                      <p className="font-semibold  text-sm">Tambahkan Orderan Jastip</p>
+                    </>
+                  ) : (
+                    orders?.map((order, index) => (
+                      <Card
+                        key={index}
+                        order={order}
+                        onActionSelengkapnya={() => navigate(`/order/${order?.order_id}`)}
+                      />
+                    ))
+                  )}
+                </div>
+                <div
+                  className="absolute bottom-2 flex flex-col items-center cursor-pointer"
+                  onClick={() => setIsOpenWait(!isOpenWait)}
+                >
+                  <ChevronUp className={`size-10 text-black/40 ${isOpenWait ? "rotate-0" : "rotate-180"}`} />
+                  {!isOpenWait ? <span className="text-sm -mt-2">buka untuk selengkapnya</span> : null}
+                </div>
+              </div>
+            ) : // ORDER PROCESS USER
+            ordersProcess?.length ? (
+              ordersProcess.map((orderProcess, index) => (
+                <div key={index} className="bg-[#FCCA8F] rounded-[6px] px-2.5 py-3 space-y-3 ">
+                  <div>
+                    <h1 className="uppercase font-bold text-lg">Batch Pengiriman</h1>
+                    <span className="text-xl -mt-5">{orderProcess.delivery_batch}</span>
                   </div>
+                  {orderProcess.detail_orders.map((information, indexDetail) => (
+                    <div key={indexDetail} className="space-y-2">
+                      <div className="flex items-center rounded-full py-2 px-3 font-bold bg-white text-xs max-w-max">
+                        <span>
+                          KODE WILAYAH : {information.code} - {information.region}
+                        </span>
+                      </div>
+                      {information.estimasi ? (
+                        <p className="leading-relaxed text-sm">
+                          estimasi tiba <span className="font-semibold">{information.estimasi}</span> di admin
+                          jakarta
+                        </p>
+                      ) : null}
+
+                      {information.orders.map((order) =>
+                        isOpenProcessByBatch == index ? (
+                          <>
+                            <Card
+                              orderProcess={order}
+                              onActionSelengkapnya={() => navigate(`/order/${order.order_id}`)}
+                              regionCodeOrderProcess={`${information.code} - ${information.region}`}
+                            />
+
+                            {/* INFROMASI ORDER BATCH */}
+                            <CardInformationOrderBatch
+                              data={{
+                                photo_wrapped: information.package_wrapped_photo,
+                                photo_received: information.package_received_photo,
+                                total_order: information.total_order,
+                                total_price: information.total_price,
+                                total_weight: information.total_weight,
+                              }}
+                            />
+                          </>
+                        ) : null
+                      )}
+                    </div>
+                  ))}
+
                   <div
-                    className="absolute bottom-2 flex flex-col items-center cursor-pointer"
-                    onClick={() => setIsOpenWait(!isOpenWait)}
+                    className="flex flex-col items-center cursor-pointer"
+                    onClick={() => {
+                      if (isOpenProcessByBatch === index) {
+                        setIsOpenProcessByBatch(null);
+                      } else {
+                        setIsOpenProcessByBatch(index);
+                      }
+                    }}
                   >
                     <ChevronUp
-                      className={`size-10 text-black/40 ${isOpenWait ? "rotate-0" : "rotate-180"}`}
+                      className={`size-10 text-black/40 ${
+                        isOpenProcessByBatch === index ? "rotate-0" : "rotate-180"
+                      }`}
                     />
-                    {!isOpenWait ? <span className="text-sm -mt-2">buka untuk selengkapnya</span> : null}
+                    {isOpenProcessByBatch !== index ? (
+                      <span className="text-sm -mt-2">buka untuk selengkapnya</span>
+                    ) : null}
                   </div>
                 </div>
-              </>
+              ))
+            ) : ordersProcessBatch?.length ? (
+              // ORDER PROCESS ADMIN
+              ordersProcessBatch.map((batch, index) => (
+                <OrderProcessBatch
+                  key={index}
+                  batch={batch}
+                  onClickRegionCode={onClickRegionCode}
+                  isOpen={isOpenOrderProcessRegionCode!}
+                  setIsOpen={setIsOpenOrderProcessRegionCode}
+                />
+              ))
             ) : (
-              // ORDER PROCESS USER
-              <>
-                {ordersProcess?.length ? (
-                  ordersProcess.map((orderProcess, index) => (
-                    <div key={index} className="bg-[#FCCA8F] rounded-[6px] px-4 py-3 space-y-3 ">
-                      <div>
-                        <h1 className="uppercase font-bold text-lg">Batch Pengiriman</h1>
-                        <span className="text-xl -mt-5">{orderProcess.delivery_batch}</span>
-                      </div>
-                      {orderProcess.detail_orders.map((information) => (
-                        <div key={information.code} className="space-y-2">
-                          <div className="flex items-center rounded-full py-2 px-3 font-bold bg-white text-xs max-w-max">
-                            <span>
-                              KODE WILAYAH : {information.code} - {information.region}
-                            </span>
-                          </div>
-                          <p className="leading-relaxed text-sm">
-                            estimasi tiba <span className="font-semibold">10 januari 2024</span> di admin
-                            jakarta
-                          </p>
-                          {information.orders.map((order) => (
-                            <>
-                              {isOpenProcessByBatch === index ? (
-                                <>
-                                  <Card
-                                    orderProcess={order}
-                                    onActionSelengkapnya={() => navigate(`/order/${order.order_id}`)}
-                                    regionCodeOrderProcess={`${information.code} - ${information.region}`}
-                                  />
-
-                                  {/* INFROMASI ORDER BATCH */}
-                                  <CardInformationOrderBatch
-                                    data={{
-                                      photo_wrapped: information.package_wrapped_photo,
-                                      photo_received: information.package_received_photo,
-                                      total_order: information.total_order,
-                                      total_price: information.total_price,
-                                      total_weight: information.total_weight,
-                                    }}
-                                  />
-                                </>
-                              ) : null}
-                            </>
-                          ))}
-                        </div>
-                      ))}
-
-                      <div
-                        className="flex flex-col items-center cursor-pointer"
-                        onClick={() => {
-                          if (isOpenProcessByBatch === index) {
-                            setIsOpenProcessByBatch(null);
-                          } else {
-                            setIsOpenProcessByBatch(index);
-                          }
-                        }}
-                      >
-                        <ChevronUp
-                          className={`size-10 text-black/40 ${
-                            isOpenProcessByBatch === index ? "rotate-0" : "rotate-180"
-                          }`}
-                        />
-                        {isOpenProcessByBatch !== index ? (
-                          <span className="text-sm -mt-2">buka untuk selengkapnya</span>
-                        ) : null}
-                      </div>
-                    </div>
-                  ))
-                ) : ordersProcessBatch?.length ? (
-                  // ORDER PROCESS ADMIN
-                  ordersProcessBatch.map((batch, index) => (
-                    <OrderProcessBatch
-                      key={index}
-                      batch={batch}
-                      onClickRegionCode={onClickRegionCode}
-                      isOpen={isOpenOrderProcessRegionCode!}
-                      setIsOpen={setIsOpenOrderProcessRegionCode}
-                    />
-                  ))
-                ) : (
-                  <h2 className="text-center font-medium">Belum ada orderan yang diproses mohon ditunggu!</h2>
-                )}
-              </>
+              <h2 className="text-center font-medium">Belum ada orderan yang diproses mohon ditunggu!</h2>
             )}
           </>
         ) : (

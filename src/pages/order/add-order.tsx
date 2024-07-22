@@ -33,6 +33,7 @@ const AddOrder = () => {
       toast.error(error.message);
     }
   });
+
   return (
     <Layout>
       <div className="m-3 px-4 py-5 bg-white rounded-md space-y-5">
@@ -48,14 +49,14 @@ const AddOrder = () => {
             </ul>
           </div>
 
-          <img src={informasiJastip} alt="" />
+          <img src={informasiJastip} alt="informasi-jastip" />
 
           <div className="flex flex-col gap-2">
             <h1 className="font-bold text-xl">Langkah Kedua :</h1>
             <h4 className="font-medium text-sm">Silahkan ini form dibawah ini</h4>
             <form onSubmit={onSubmitOrder} className="space-y-4">
-              {FORM_ORDER.map((form) => (
-                <div className="space-y-1">
+              {FORM_ORDER.map((form, index) => (
+                <div key={index} className="space-y-1">
                   {!form.options ? (
                     <>
                       <Label>{form.label}</Label>
@@ -79,7 +80,14 @@ const AddOrder = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {form.options.map((option) => (
-                            <SelectItem value={option}>{option}</SelectItem>
+                            <SelectItem
+                              key={option}
+                              value={
+                                form.label === "Kode Wilayah" ? option.split("-")[0].replace(" ", "") : option
+                              }
+                            >
+                              {option}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

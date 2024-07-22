@@ -8,11 +8,15 @@ import { ChevronLeft, SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-
+interface IEstimation {
+  tanggal: string;
+  bulan: string;
+  tahun: string;
+}
 const Customers = () => {
   const params = useParams();
   const navigate = useNavigate();
-  // const [estimasi, setEstimasi] = useState<string>();
+  const [estimasi, setEstimasi] = useState<IEstimation>({ tanggal: "", bulan: "", tahun: "" });
   const [ordersProcessCustomers, setOrdersProcessCustomers] = useState<IOrdersProcessCustomers>();
 
   useEffect(() => {
@@ -23,7 +27,8 @@ const Customers = () => {
     try {
       const result = await getOrdersProcessCustomersByAdmin(code, batch);
       setOrdersProcessCustomers(result.data);
-      // setEstimasi(result.data.estimasi);
+      const [tanggal, bulan, tahun] = result.data.estimasi.split(" ");
+      setEstimasi({ tanggal, bulan, tahun });
     } catch (error: any) {
       navigate("/orders");
       toast.error(error.message);
@@ -33,12 +38,11 @@ const Customers = () => {
   const onClickCustomerName = (batch: string, code: string, name: string) => {
     navigate(`/customer-orders/${batch}/${code}/${name}`);
   };
+
   const onCreateEstimasi = async (e: any) => {
     e.preventDefault();
     try {
-      const tanggal = e.target[0].value;
-      const bulan = e.target[1].value;
-      const tahun = e.target[2].value;
+      const { tanggal, bulan, tahun }: IEstimation = estimasi!;
       if (!tanggal || !bulan || !tahun) {
         toast.error("Estimasi tidak valid");
         return;
@@ -54,9 +58,37 @@ const Customers = () => {
       toast.error(error.message);
     }
   };
+  const onChangeValueTanggal = (e: any) => {
+    setEstimasi(
+      (prevState) =>
+        ({
+          ...prevState,
+          tanggal: e.target.value,
+        } as IEstimation)
+    );
+  };
+  const onChangeValueBulan = (e: any) => {
+    setEstimasi(
+      (prevState) =>
+        ({
+          ...prevState,
+          bulan: e.target.value,
+        } as IEstimation)
+    );
+  };
+  const onChangeValueTahun = (e: any) => {
+    setEstimasi(
+      (prevState) =>
+        ({
+          ...prevState,
+          tahun: e.target.value,
+        } as IEstimation)
+    );
+  };
+
   return (
     <Layout>
-      <div className=" pt-3 px-5 space-y-6 ">
+      <div className=" pt-3 px-2.5 space-y-6 ">
         <div className="bg-[#FCCA8F] rounded-[6px] px-4 pt-3 pb-16 space-y-5 flex flex-col items-start">
           <div className="flex items-center gap-4">
             <ChevronLeft
@@ -65,9 +97,7 @@ const Customers = () => {
             />
             <div>
               <h1 className="uppercase font-bold text-base text-slate-800">Batch Pengiriman</h1>
-              <span className="text-base font-semibold -mt-5">
-                {ordersProcessCustomers?.delivery_batch}
-              </span>
+              <span className="text-base font-semibold -mt-5">{ordersProcessCustomers?.delivery_batch}</span>
             </div>
           </div>
 
@@ -84,23 +114,28 @@ const Customers = () => {
                   <Input
                     placeholder="tanggal"
                     className="bg-transparent shadow-none ring-0 border-none"
+                    value={estimasi?.tanggal}
+                    onChange={onChangeValueTanggal}
+                    name="tanggal"
                   />
                   /
                   <Input
                     placeholder="bulan"
                     className="bg-transparent shadow-none ring-0 border-none"
+                    value={estimasi?.bulan}
+                    onChange={onChangeValueBulan}
+                    name="bulan"
                   />
                   /
                   <Input
                     placeholder="tahun"
                     className="bg-transparent shadow-none ring-0 border-none"
+                    value={estimasi?.tahun}
+                    onChange={onChangeValueTahun}
+                    name="tahun"
                   />
                 </div>
-                <Button
-                  type="submit"
-                  size={"xs"}
-                  className="uppercase max-w-32 text-xs font-medium"
-                >
+                <Button type="submit" size={"xs"} className="uppercase max-w-32 text-xs font-medium">
                   Simpan
                 </Button>
               </form>

@@ -76,7 +76,7 @@ const CardInformationOrderBatch = ({ data }: CardInformationOrderBatchProps) => 
         </div>
         <div>
           <h4 className="font-bold">Harga</h4>
-          <span>Rp.{data.total_price}</span>
+          <span>Rp. {data.total_price.toLocaleString()}</span>
         </div>
       </div>
     </div>
