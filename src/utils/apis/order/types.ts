@@ -104,8 +104,11 @@ export interface IOrdersProcessCustomerOrders {
   code: string;
   estimasi: string;
   orders: IOrdersProcessItem[];
-  package_received_photo: string;
-  package_wrapped_photo: string;
+  foto_orders: {
+    id_foto: number;
+    package_received_photo: string;
+    package_wrapped_photo: string;
+  };
   region: string;
   total_order: number;
   total_price: number;

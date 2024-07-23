@@ -55,7 +55,7 @@ const CardInformationOrderBatch = ({ data }: CardInformationOrderBatchProps) => 
         >
           {data.photo_received ? (
             <>
-              <h3 className="font-semibold">Photo paket yang di terima admin jakarta</h3>
+              <h3 className="font-semibold">Photo paket yang di terima admin perwakilan</h3>
               <div className="py-4">
                 <img src={data.photo_received} alt="photo_received" className="rounded" />
               </div>

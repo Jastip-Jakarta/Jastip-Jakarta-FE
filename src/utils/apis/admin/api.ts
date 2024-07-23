@@ -45,30 +45,23 @@ export const uploadImgAdminJ = async (body: UploadImgPayload) => {
   }
 };
 
-export const uploadImgAdminP = async (body: { photo_received: string }) => {
+export const uploadImgAdminP = async (foto_Id: number, body: { photo_received: string }) => {
   try {
     const formData = new FormData();
     formData.append("photo_received", body.photo_received);
 
-    const response = await axiosWithConfig.put("/admin/foto/2", formData);
+    const response = await axiosWithConfig.put(`/admin/foto/${foto_Id}`, formData);
     return response.data as Response<{}>;
   } catch (error: any) {
     throw Error(error.response.data.message);
   }
 };
 
-export const createEstimatedOrders = async (
-  estimation: string,
-  regionCode: string,
-  batch: string
-) => {
+export const createEstimatedOrders = async (estimation: string, regionCode: string, batch: string) => {
   try {
-    const response = await axiosWithConfig.post(
-      `/admin/order/estimasi?code=${regionCode}&batch=${batch}`,
-      {
-        estimation,
-      }
-    );
+    const response = await axiosWithConfig.post(`/admin/order/estimasi?code=${regionCode}&batch=${batch}`, {
+      estimation,
+    });
     return response.data as Response<{}>;
   } catch (error: any) {
     throw Error(error.response.data.message);

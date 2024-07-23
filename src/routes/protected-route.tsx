@@ -7,9 +7,12 @@ const ProtectedRoute = () => {
   const protectedByToken = ["/orders", "/order"];
   const adminSProtected = ["/admin/orders", "/admin/dashboard", "/admin/region-code"];
   const adminPProtected = ["/batch-pengiriman"];
+  const adminOrderprocessProtected = ["/customers", "/customer-orders"];
 
-  if (pathname === "/admin") {
-    return <Navigate to={"/"} />;
+  if (adminOrderprocessProtected.some((path) => pathname.startsWith(path))) {
+    if (!token || !user.role) {
+      return <Navigate to={"/"} />;
+    }
   }
 
   // KETIKA SUDAH LOGIN
@@ -31,11 +34,10 @@ const ProtectedRoute = () => {
   // ADMIN SUPER
   if (adminSProtected.some((path) => pathname.startsWith(path))) {
     if (!token) {
+      if (user.role !== "Super") {
+        return <Navigate to={"/"} />;
+      }
       return <Navigate to={"/admin/login"} />;
-    }
-
-    if (user.role === "Super") {
-      return <Outlet />;
     }
   }
   // ADMIN PERWAKILAN

@@ -22,7 +22,6 @@ const App = () => {
       children: [
         {
           path: "/",
-          index: true,
           element: <Homepage />,
         },
         {

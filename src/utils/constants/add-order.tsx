@@ -51,6 +51,14 @@ export const FORM_ORDER = [
     options: OPTIONS.kodeWilayah,
   },
 ];
+export interface FormOrderType {
+  label: string;
+  formName: string;
+  placeholder: string;
+  msg: string;
+  options?: string[];
+}
+[];
 
 export const FORM_ORDER_ADMIN_JAKARTA = [
   {

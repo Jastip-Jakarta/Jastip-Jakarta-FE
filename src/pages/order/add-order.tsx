@@ -1,9 +1,5 @@
 import Layout from "@/components/Layout";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Info } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FORM_ORDER } from "@/utils/constants/add-order";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { IOrderType, orderSchema } from "@/utils/apis/order/types";
@@ -12,6 +8,7 @@ import toast from "react-hot-toast";
 import { createOrder } from "@/utils/apis/order/api";
 import { useNavigate } from "react-router-dom";
 import informasiJastip from "../../../public/images/informasi-jastip.png";
+import AddEditOrder from "@/components/FormAddEditOrder";
 const AddOrder = () => {
   const navigate = useNavigate();
 
@@ -55,52 +52,7 @@ const AddOrder = () => {
             <h1 className="font-bold text-xl">Langkah Kedua :</h1>
             <h4 className="font-medium text-sm">Silahkan ini form dibawah ini</h4>
             <form onSubmit={onSubmitOrder} className="space-y-4">
-              {FORM_ORDER.map((form, index) => (
-                <div key={index} className="space-y-1">
-                  {!form.options ? (
-                    <>
-                      <Label>{form.label}</Label>
-                      <Input
-                        placeholder={form.placeholder}
-                        {...register(form.formName as keyof typeof register)}
-                      />
-                      {errors?.[form.formName as keyof typeof errors] ? (
-                        <p className="text-sm text-red-500 -mt-2">
-                          {errors?.[form.formName as keyof typeof errors]?.message?.toString()}
-                        </p>
-                      ) : null}
-                      <p className="text-xs">{form.msg}</p>
-                    </>
-                  ) : (
-                    <>
-                      <Label>{form.label}</Label>
-                      <Select onValueChange={(e) => setValue(form.formName as any, e)}>
-                        <SelectTrigger className="!ring-0">
-                          <SelectValue placeholder={form.placeholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {form.options.map((option) => (
-                            <SelectItem
-                              key={option}
-                              value={
-                                form.label === "Kode Wilayah" ? option.split("-")[0].replace(" ", "") : option
-                              }
-                            >
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors?.[form.formName as keyof typeof errors] ? (
-                        <p className="text-sm text-red-500 -mt-2">
-                          {errors?.[form.formName as keyof typeof errors]?.message}
-                        </p>
-                      ) : null}
-                      <p className="text-xs">{form.msg}</p>
-                    </>
-                  )}
-                </div>
-              ))}
+              <AddEditOrder errors={errors} register={register} setValue={setValue} />
               <div className="flex justify-between pt-3">
                 <Button
                   size={"sm"}

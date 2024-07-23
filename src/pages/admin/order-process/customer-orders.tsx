@@ -20,7 +20,7 @@ const CustomerOrders = () => {
   useEffect(() => {
     fetchOrdersProcessCustomers(params.batch!, params.code!, params.customerName!);
   }, [params]);
-
+  console.log(ordersCustomer?.foto_orders);
   const fetchOrdersProcessCustomers = async (batch: string, code: string, customerName: string) => {
     try {
       const result = await getOrdersProcessCustomerOrdersByAdmin(code, batch, customerName);
@@ -49,8 +49,12 @@ const CustomerOrders = () => {
   };
   const onSubmitUploadImgAdminP = async (e: any) => {
     try {
+      if (ordersCustomer?.foto_orders.id_foto === 0) {
+        toast.error("Harap upload foto paket di admin jakarta terlebih dahulu!");
+        return;
+      }
       setIsLoading(true);
-      const result = await uploadImgAdminP({
+      const result = await uploadImgAdminP(ordersCustomer?.foto_orders.id_foto!, {
         photo_received: e.target.files[0],
       });
       toast.success(result.message);
@@ -162,7 +166,7 @@ const CustomerOrders = () => {
                 </div>
                 <div>
                   <h4 className="font-bold">Harga</h4>
-                  <span>Rp.{ordersCustomer?.total_price}</span>
+                  <span>Rp. {ordersCustomer?.total_price.toLocaleString()}</span>
                 </div>
               </div>
             </div>

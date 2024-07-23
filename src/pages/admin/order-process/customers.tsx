@@ -28,7 +28,9 @@ const Customers = () => {
       const result = await getOrdersProcessCustomersByAdmin(code, batch);
       setOrdersProcessCustomers(result.data);
       const [tanggal, bulan, tahun] = result.data.estimasi.split(" ");
-      setEstimasi({ tanggal, bulan, tahun });
+      if (tanggal && bulan && tahun) {
+        setEstimasi({ tanggal, bulan, tahun });
+      }
     } catch (error: any) {
       navigate("/orders");
       toast.error(error.message);

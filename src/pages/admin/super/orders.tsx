@@ -23,16 +23,22 @@ import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { FORM_ORDER } from "@/utils/constants/add-order";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import OrderProcessBatch from "@/components/OrderProcessBatch";
-
+import { LoaderCircle } from "lucide-react";
+import AddEditOrder from "@/components/FormAddEditOrder";
+import SkeletonCardOrderWait from "@/components/Skeletons/SkeletonCardOrderWait";
+export interface valueOptionType {
+  name: string;
+  status: string;
+  online_store: string;
+  code: string;
+}
 const OrdersAdminS = () => {
   const navigate = useNavigate();
+  const [isLoadingOrder, setIsLoadingOrder] = useState(false);
+  const [isLoadingOrdersWait, setIsLoadingOrdersWait] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [queryParams, _setqueryParams] = useState({
     delivery_batch: searchParams.get("db") ?? "",
@@ -44,12 +50,7 @@ const OrdersAdminS = () => {
   const [isOpenOrder, setIsOpenOrder] = useState(false);
   const [ordersWait, setOrdersWait] = useState<IOrders[]>();
   const [cardOrderId, setCardOrderId] = useState<string | null>();
-  const [valueOptionOrderInput, setValueOptionOrderInput] = useState<{
-    name: string;
-    status: string;
-    online_store: string;
-    code: string;
-  }>();
+  const [valueOptionOrderInput, setValueOptionOrderInput] = useState<valueOptionType>();
   // const [resultOrdersSearch, setResultOrdersSearch] = useState<IOrders[] | null>(null);
   // const [isOpenProcessByBatch, setIsOpenProcessByBatch] = useState<number | null>(null);
   const [ordersProcessBatch, setOrdersProcessBatch] = useState<IOrderProcessBatch[]>();
@@ -60,9 +61,9 @@ const OrdersAdminS = () => {
     // fetchOrdersProcess();
     fetchOrdersProcessBatch();
   }, []);
-  useEffect(() => {
-    alert(`region_code : ${queryParams.code} delivery batch : ${queryParams.delivery_batch}`);
-  }, [setSearchParams]);
+  // useEffect(() => {
+  //   alert(`region_code : ${queryParams.code} delivery batch : ${queryParams.delivery_batch}`);
+  // }, [setSearchParams]);
 
   // GENERAL FORM
   const {
@@ -85,6 +86,7 @@ const OrdersAdminS = () => {
 
   const fetchOrder = async (order_id: string) => {
     try {
+      setIsLoadingOrder(true);
       setIsOpenOrder(true);
       setCardOrderId(order_id);
       const result = await getOrder(order_id);
@@ -104,16 +106,21 @@ const OrdersAdminS = () => {
     } catch (error: any) {
       navigate("/orders");
       toast.error(error.message);
+    } finally {
+      setIsLoadingOrder(false);
     }
   };
 
   const fetchOrders = async () => {
     try {
+      setIsLoadingOrdersWait(true);
       const result = await getOrdersByAdmin();
       // !result.data && setIsOpenWait(true);
       setOrdersWait(result.data);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoadingOrdersWait(false);
     }
   };
 
@@ -152,7 +159,12 @@ const OrdersAdminS = () => {
 
         <div className="flex flex-col items-center gap-4 p-4">
           {tab === "wait" ? (
-            ordersWait?.length ? (
+            isLoadingOrdersWait ? (
+              <div className="flex items-center flex-col gap-2">
+                <LoaderCircle className="animate-spin" />
+                <span>Loading...</span>
+              </div>
+            ) : ordersWait?.length ? (
               <div className="bg-white px-6 py-5 rounded-md w-full space-y-10 shadow-sm border ">
                 <h3 className="uppercase font-bold text-xl -mb-4">menunggu diterima admin</h3>
                 {ordersWait?.map((orderWait, index) => (
@@ -167,68 +179,31 @@ const OrdersAdminS = () => {
                   </div>
                 ))}
                 <Dialog open={isOpenOrder} onOpenChange={setIsOpenOrder}>
-                  <DialogContent className="sm:max-w-[750px]">
-                    <DialogTitle className="text-xl font-semibold">
-                      <h1>Edit order</h1>
-                    </DialogTitle>
-                    <form onSubmit={onSubmitUpdateOrder} className="flex flex-col gap-3 flex-1">
-                      {/* FORM GENERAL */}
-                      {FORM_ORDER.map((form, index) => (
-                        <div className="space-y-1" key={index}>
-                          {!form.options ? (
-                            <>
-                              <Label>{form.label}</Label>
-                              <Input placeholder={form.placeholder} {...register(form.formName as any)} />
-                              {errors?.[form.formName as keyof typeof errors] ? (
-                                <p className="text-sm text-red-500 -mt-2">
-                                  {errors?.[form.formName as keyof typeof errors]?.message?.toString()}
-                                </p>
-                              ) : null}
-                              <p className="text-sm">{form.msg}</p>
-                            </>
-                          ) : (
-                            <>
-                              <Label>{form.label}</Label>
-                              <Select
-                                value={
-                                  form.label === "Toko Online"
-                                    ? valueOptionOrderInput?.online_store
-                                    : valueOptionOrderInput?.code
-                                }
-                                onValueChange={(e) => setValue(form.formName as any, e)}
-                              >
-                                <SelectTrigger className="!ring-0">
-                                  <SelectValue placeholder={form.placeholder} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {form.options.map((option) => (
-                                    <SelectItem key={option} value={option}>
-                                      {option}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              {errors?.[form.formName as keyof typeof errors] ? (
-                                <p className="text-sm text-red-500 -mt-2">
-                                  {errors?.[form.formName as keyof typeof errors]?.message}
-                                </p>
-                              ) : null}
-
-                              {form.formName == "region_code" ? (
-                                <p className="text-sm">
-                                  {form.msg} <span className="font-bold">disini.</span>
-                                </p>
-                              ) : (
-                                <p className="text-sm">{form.msg}</p>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      ))}
-                      <DialogFooter className="mt-5">
-                        <Button type="submit">Simpan</Button>
-                      </DialogFooter>
-                    </form>
+                  <DialogContent className="sm:max-w-[750px] min-h-48">
+                    {isLoadingOrder ? (
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <LoaderCircle className="animate-spin" /> Loading...
+                      </div>
+                    ) : (
+                      <>
+                        <DialogTitle className="text-xl font-semibold">
+                          <h1>Edit order</h1>
+                        </DialogTitle>
+                        <form onSubmit={onSubmitUpdateOrder} className="flex flex-col gap-3 flex-1">
+                          <AddEditOrder
+                            defaultValueOption={valueOptionOrderInput as valueOptionType}
+                            errors={errors}
+                            register={register}
+                            setValue={setValue}
+                          />
+                          <DialogFooter className="mt-3">
+                            <Button type="submit" className="min-w-28 h-9 rounded-md">
+                              Simpan
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </>
+                    )}
                   </DialogContent>
                 </Dialog>
               </div>
