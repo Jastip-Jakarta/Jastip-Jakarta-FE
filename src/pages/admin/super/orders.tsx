@@ -20,7 +20,7 @@ import {
 } from "@/utils/apis/order/types";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +28,6 @@ import { useForm } from "react-hook-form";
 import OrderProcessBatch from "@/components/OrderProcessBatch";
 import { LoaderCircle } from "lucide-react";
 import AddEditOrder from "@/components/FormAddEditOrder";
-import SkeletonCardOrderWait from "@/components/Skeletons/SkeletonCardOrderWait";
 export interface valueOptionType {
   name: string;
   status: string;
@@ -39,11 +38,11 @@ const OrdersAdminS = () => {
   const navigate = useNavigate();
   const [isLoadingOrder, setIsLoadingOrder] = useState(false);
   const [isLoadingOrdersWait, setIsLoadingOrdersWait] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [queryParams, _setqueryParams] = useState({
-    delivery_batch: searchParams.get("db") ?? "",
-    code: searchParams.get("c") ?? "",
-  });
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // const [queryParams, _setqueryParams] = useState({
+  //   delivery_batch: searchParams.get("db") ?? "",
+  //   code: searchParams.get("c") ?? "",
+  // });
   const [keyword, setKeyword] = useState("");
   const [tab, setTab] = useState<tabType>("wait");
   // const [isOpenWait, setIsOpenWait] = useState(false);
@@ -218,7 +217,8 @@ const OrdersAdminS = () => {
                     key={index}
                     batch={batch}
                     onClickRegionCode={(delivery_batch, code) => {
-                      setSearchParams({ db: delivery_batch, c: code });
+                      // setSearchParams({ db: delivery_batch, c: code });
+                      alert(`${delivery_batch} : ${code}`);
                     }}
                     isOpen={isOpenOrderProcessRegionCode!}
                     setIsOpen={setIsOpenOrderProcessRegionCode}
