@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { createOrder } from "@/utils/apis/order/api";
 import { useNavigate } from "react-router-dom";
 import informasiJastip from "../../../public/images/informasi-jastip.png";
-import AddEditOrder from "@/components/FormAddEditOrder";
+import AddEditOrder from "@/components/Form/FormAddEditOrder";
 const AddOrder = () => {
   const navigate = useNavigate();
 

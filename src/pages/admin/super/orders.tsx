@@ -5,29 +5,33 @@ import Tab, { tabType } from "@/components/Tab";
 import { getOrdersByAdmin } from "@/utils/apis/admin/api";
 import {
   getOrder,
-  // getOrdersProcess,
   getOrdersProcessBatchByAdmin,
-  // searchUserOrders,
+  getOrdersProcessCustomerOrdersByAdmin,
+  getOrdersProcessCustomersByAdmin,
   searchUserOrdersByAdmin,
   updateOrder,
 } from "@/utils/apis/order/api";
 import {
   IOrderProcessBatch,
   IOrders,
-  // IOrdersProcess,
+  IOrdersProcessCustomerOrders,
+  IOrdersProcessCustomers,
   IOrderType,
   orderSchema,
 } from "@/utils/apis/order/types";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import OrderProcessBatch from "@/components/OrderProcessBatch";
 import { LoaderCircle } from "lucide-react";
-import AddEditOrder from "@/components/FormAddEditOrder";
+import AddEditOrder from "@/components/Form/FormAddEditOrder";
+
+import ContainerCustomers from "@/components/Customers";
+import ContainerCustomerOrders from "@/components/CustomerOrders";
 export interface valueOptionType {
   name: string;
   status: string;
@@ -36,35 +40,42 @@ export interface valueOptionType {
 }
 const OrdersAdminS = () => {
   const navigate = useNavigate();
-  const [isLoadingOrder, setIsLoadingOrder] = useState(false);
-  const [isLoadingOrdersWait, setIsLoadingOrdersWait] = useState(false);
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const [queryParams, _setqueryParams] = useState({
-  //   delivery_batch: searchParams.get("db") ?? "",
-  //   code: searchParams.get("c") ?? "",
-  // });
   const [keyword, setKeyword] = useState("");
   const [tab, setTab] = useState<tabType>("wait");
-  // const [isOpenWait, setIsOpenWait] = useState(false);
   const [isOpenOrder, setIsOpenOrder] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [ordersWait, setOrdersWait] = useState<IOrders[]>();
+  const [isLoadingOrder, setIsLoadingOrder] = useState(false);
   const [cardOrderId, setCardOrderId] = useState<string | null>();
-  const [valueOptionOrderInput, setValueOptionOrderInput] = useState<valueOptionType>();
-  // const [resultOrdersSearch, setResultOrdersSearch] = useState<IOrders[] | null>(null);
-  // const [isOpenProcessByBatch, setIsOpenProcessByBatch] = useState<number | null>(null);
+  const [isLoadingOrdersWait, setIsLoadingOrdersWait] = useState(false);
+  const [ordersCustomer, setOrdersCustomer] = useState<IOrdersProcessCustomerOrders | null>(); // orders customer
   const [ordersProcessBatch, setOrdersProcessBatch] = useState<IOrderProcessBatch[]>();
+  const [valueOptionOrderInput, setValueOptionOrderInput] = useState<valueOptionType>();
+  const [orderProcessCustomers, setOrderProcessCustomers] = useState<IOrdersProcessCustomers | null>();
   const [isOpenOrderProcessRegionCode, setIsOpenOrderProcessRegionCode] = useState<string | null>();
-
+  const [isOpenCustomers, setIsOpenCustomers] = useState(false);
+  const [isOpenCustomerOrders, setIsOpenCustomerOrders] = useState(false);
   useEffect(() => {
     fetchOrders();
-    // fetchOrdersProcess();
     fetchOrdersProcessBatch();
   }, []);
-  // useEffect(() => {
-  //   alert(`region_code : ${queryParams.code} delivery batch : ${queryParams.delivery_batch}`);
-  // }, [setSearchParams]);
 
-  // GENERAL FORM
+  useEffect(() => {
+    if (searchParams.has("db") && searchParams.has("c")) {
+      setTab("process");
+      if (searchParams.has("name")) {
+        fetchOrdersProcessCustomers(
+          searchParams.get("db")!,
+          searchParams.get("c")!,
+          searchParams.get("name")!
+        );
+        return;
+      }
+      fetchCustomers(searchParams.get("c")!, searchParams.get("db")!);
+    }
+  }, [searchParams.get("db"), searchParams.get("c"), searchParams.get("name")]);
+
+  // UPDATE ORDER FORM
   const {
     register,
     handleSubmit,
@@ -83,6 +94,26 @@ const OrdersAdminS = () => {
     }
   });
 
+  const fetchOrdersProcessCustomers = async (batch: string, code: string, customerName: string) => {
+    try {
+      setIsOpenCustomerOrders(true);
+      const result = await getOrdersProcessCustomerOrdersByAdmin(code, batch, customerName);
+      setOrdersCustomer(result.data);
+    } catch (error: any) {
+      navigate("/orders");
+      toast.error(error.message);
+    }
+  };
+  const fetchCustomers = async (code: string, batch: string) => {
+    try {
+      setIsOpenCustomers(true);
+
+      const result = await getOrdersProcessCustomersByAdmin(code, batch);
+      setOrderProcessCustomers(result.data);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
   const fetchOrder = async (order_id: string) => {
     try {
       setIsLoadingOrder(true);
@@ -211,14 +242,34 @@ const OrdersAdminS = () => {
             )
           ) : (
             <>
-              {ordersProcessBatch?.length ? (
+              {isOpenCustomerOrders ? (
+                <ContainerCustomerOrders
+                  data={ordersCustomer!}
+                  backAction={() => {
+                    setIsOpenCustomerOrders(false);
+                    setOrdersCustomer(null);
+                    searchParams.delete("name");
+                    setSearchParams(searchParams);
+                  }}
+                />
+              ) : isOpenCustomers ? (
+                <ContainerCustomers
+                  data={orderProcessCustomers!}
+                  backAction={() => {
+                    setIsOpenCustomers(false);
+                    setOrderProcessCustomers(null);
+                    searchParams.delete("db");
+                    searchParams.delete("c");
+                    setSearchParams(searchParams);
+                  }}
+                />
+              ) : ordersProcessBatch?.length ? (
                 ordersProcessBatch.map((batch, index) => (
                   <OrderProcessBatch
                     key={index}
                     batch={batch}
                     onClickRegionCode={(delivery_batch, code) => {
-                      // setSearchParams({ db: delivery_batch, c: code });
-                      alert(`${delivery_batch} : ${code}`);
+                      setSearchParams({ db: delivery_batch, c: code });
                     }}
                     isOpen={isOpenOrderProcessRegionCode!}
                     setIsOpen={setIsOpenOrderProcessRegionCode}

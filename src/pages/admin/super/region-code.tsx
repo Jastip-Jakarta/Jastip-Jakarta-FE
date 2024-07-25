@@ -17,13 +17,7 @@ import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components
 import { getAdminPerwakilan } from "@/utils/apis/admin/api";
 import { IAdmin } from "@/utils/apis/admin/types";
 import { useAuth } from "@/utils/context/auth";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const RegionCodeAdminSuper = () => {
   const { user } = useAuth();
@@ -194,10 +188,7 @@ const RegionCodeAdminSuper = () => {
                     ) : (
                       <>
                         <Label>{form.label}</Label>
-                        <Select
-                          onValueChange={(e) => setValue(form.formName as any, e)}
-                          value={adminJId!}
-                        >
+                        <Select onValueChange={(e) => setValue(form.formName as any, e)} value={adminJId!}>
                           <SelectTrigger className="!ring-0">
                             <SelectValue placeholder={form.placeholder} />
                           </SelectTrigger>

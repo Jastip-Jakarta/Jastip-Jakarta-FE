@@ -1,13 +1,7 @@
 import LayoutAdmin from "@/components/LayoutAdmin";
 import SearchOrder from "@/components/SearchOrder";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FORM_ADD_USER } from "@/utils/constants/add-order";

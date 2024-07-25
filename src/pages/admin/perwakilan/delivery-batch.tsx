@@ -71,10 +71,7 @@ const DeliveryBatch = () => {
           {FORM_ADD_BATCH.map((input) => (
             <div className="space-y-1" key={input.label}>
               <Label className="font-semibold">{input.label}</Label>
-              <Input
-                placeholder={input.placeholder}
-                {...register(input.formName as keyof typeof register)}
-              />
+              <Input placeholder={input.placeholder} {...register(input.formName as keyof typeof register)} />
               {errors?.[input.formName as keyof typeof errors] ? (
                 <p className="text-sm text-red-500 -mt-2">
                   {errors?.[input.formName as keyof typeof errors]?.message?.toString()}
@@ -92,12 +89,7 @@ const DeliveryBatch = () => {
             >
               Batal
             </Button>
-            <Button
-              size={"xs"}
-              className="w-full text-xs rounded-full"
-              disabled={isSubmitting}
-              type="submit"
-            >
+            <Button size={"xs"} className="w-full text-xs rounded-full" disabled={isSubmitting} type="submit">
               Simpan
             </Button>
           </div>

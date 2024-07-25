@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { IOrderType } from "@/utils/apis/order/types";
 import { FORM_ORDER } from "@/utils/constants/add-order";
 import { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { valueOptionType } from "../pages/admin/super/orders";
+import { valueOptionType } from "../../pages/admin/super/orders";
 
 interface AddEditOrderProps {
   errors: FieldErrors<IOrderType>;
