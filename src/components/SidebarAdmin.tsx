@@ -16,7 +16,7 @@ interface SidebarProps {
 const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
   const navigate = useNavigate();
   const { user, changeToken } = useAuth();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
   const [isLoadingUpload, setIsLoadingUpload] = useState(false);
 
@@ -119,6 +119,9 @@ const SidebarAdmin = ({ isOpen, setIsOpen }: SidebarProps) => {
                             break;
                           case "Orderan Jastip":
                             navigate("/admin/orders");
+                            if (search) {
+                              navigate(0);
+                            }
                             break;
                           case "Dashboard":
                             navigate("/admin/dashboard");

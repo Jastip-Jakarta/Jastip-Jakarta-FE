@@ -11,9 +11,10 @@ import Loading from "./Loading";
 interface ContainerCustomerOrdersProps {
   data: IOrdersProcessCustomerOrders;
   backAction?: () => void;
+  onClickSelengkapnya?: (orderId: number) => void;
 }
 
-const ContainerCustomerOrders = ({ data, backAction }: ContainerCustomerOrdersProps) => {
+const ContainerCustomerOrders = ({ data, backAction, onClickSelengkapnya }: ContainerCustomerOrdersProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -89,7 +90,13 @@ const ContainerCustomerOrders = ({ data, backAction }: ContainerCustomerOrdersPr
             <Card
               key={order.order_id}
               orderProcess={order}
-              onActionSelengkapnya={() => navigate(`/order/${order.order_id}`)}
+              onActionSelengkapnya={() => {
+                if (onClickSelengkapnya) {
+                  onClickSelengkapnya(order.order_id);
+                } else {
+                  navigate(`/order/${order.order_id}`);
+                }
+              }}
               regionCodeOrderProcess={`${data.code} - ${data.region}`}
             />
           ))}
