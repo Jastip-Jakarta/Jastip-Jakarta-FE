@@ -9,7 +9,7 @@ import {
   getOrdersProcessCustomerOrdersByAdmin,
   getOrdersProcessCustomersByAdmin,
   searchUserOrdersByAdmin,
-  updateOrder,
+  updateOrderByAdminSuper,
 } from "@/utils/apis/order/api";
 import {
   IOrderProcessBatch,
@@ -86,7 +86,7 @@ const OrdersAdminS = () => {
   } = useForm<IOrderType>({ resolver: zodResolver(orderSchema) });
   const onSubmitUpdateOrder = handleSubmit(async (body: IOrderType) => {
     try {
-      const result = await updateOrder(cardOrderId as string, body);
+      const result = await updateOrderByAdminSuper(cardOrderId as string, body);
       toast.success(result.message);
       reset();
       navigate("/orders");
@@ -99,6 +99,10 @@ const OrdersAdminS = () => {
     try {
       setIsOpenCustomerOrders(true);
       const result = await getOrdersProcessCustomerOrdersByAdmin(code, batch, customerName);
+      if (!result.data.orders) {
+        setIsOpenCustomerOrders(false);
+        return;
+      }
       setOrdersCustomer(result.data);
     } catch (error: any) {
       setIsOpenCustomerOrders(false);
@@ -208,9 +212,7 @@ const OrdersAdminS = () => {
                 </div>
               ) : (
                 <>
-                  <DialogTitle className="text-xl font-semibold">
-                    <h1>Edit order</h1>
-                  </DialogTitle>
+                  <DialogTitle className="text-xl font-semibold">Edit order</DialogTitle>
                   <form onSubmit={onSubmitUpdateOrder} className="flex flex-col gap-3 flex-1">
                     <AddEditOrder
                       defaultValueOption={valueOptionOrderInput as valueOptionType}

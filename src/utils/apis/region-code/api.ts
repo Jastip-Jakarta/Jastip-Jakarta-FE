@@ -19,6 +19,23 @@ export const getRegion = async (code: string) => {
     throw Error(error.response.data.message);
   }
 };
+export const updateRegionCode = async (code: string, body: RegionPayload) => {
+  try {
+    const response = await axiosWithConfig.put(`/admin/region/${code}`, body);
+
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+export const searchRegionCodeByAdminSuper = async (code: string) => {
+  try {
+    const response = await axiosWithConfig.get(`/admin/region/search?code=${code}`);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
 export const createRegion = async (body: RegionPayload) => {
   try {
     const response = await axiosWithConfig.post("admin/region", body);

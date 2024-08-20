@@ -11,7 +11,13 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FORM_REGION_CODE } from "@/utils/constants/add-order";
 import CardRegionCodeAdmin from "@/components/Card/CardRegionCodeAdmin";
-import { createRegion, getRegion, getRegions } from "@/utils/apis/region-code/api";
+import {
+  createRegion,
+  getRegion,
+  getRegions,
+  searchRegionCodeByAdminSuper,
+  updateRegionCode,
+} from "@/utils/apis/region-code/api";
 import { IRegion, RegionPayload, regionSchema } from "@/utils/apis/region-code/types";
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { getAdminPerwakilan } from "@/utils/apis/admin/api";
@@ -21,11 +27,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const RegionCodeAdminSuper = () => {
   const { user } = useAuth();
+  const [keyword, setKeyword] = useState("");
   const [regions, setRegions] = useState<IRegion[]>();
   const [adminJId, setAdminJId] = useState<string | null>();
   const [adminPerwakilans, setAdminPerwakilans] = useState<IAdmin[]>();
   const [isOpenAddRegionCode, setIsOpenAddRegionCode] = useState(false);
   const [isOpenDetailRegionCode, setIsOpenDetailRegionCode] = useState(false);
+  const [codeToUpdateRegionCode, setCodeToUpdateRegionCode] = useState<string>();
   useEffect(() => {
     fetchRegions();
     fetchAdminPerwakilan();
@@ -78,12 +86,42 @@ const RegionCodeAdminSuper = () => {
       setValue("code", result.data.code!);
       setValue("region", result.data.region!);
       setValue("full_address", result.data.full_address!);
-      setValue("price", 100000);
+      setValue("price", result.data.price!);
+      setCodeToUpdateRegionCode(result.data.code);
     } catch (error: any) {
       toast.error(error.message);
     }
   };
 
+  const onsubmitUpdateRegionCode = handleSubmit(async (body: RegionPayload) => {
+    try {
+      const result = await updateRegionCode(codeToUpdateRegionCode!, body);
+      toast.success(result.message);
+      reset();
+      setIsOpenAddRegionCode(false);
+      fetchRegions();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  });
+  const handleSearchUserOrders = async (e: any) => {
+    e.preventDefault();
+    try {
+      if (keyword === "") {
+        // setResultOrdersSearch(null);
+        location.reload();
+        return;
+      }
+      const result = await searchRegionCodeByAdminSuper(keyword);
+      setRegions(result.data as any);
+      if (!result.data) {
+        toast.error("Kode wilayah tidak ditemukan!");
+        fetchRegions();
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
   return (
     <LayoutAdmin>
       <div className="space-y-8 max-w-5xl mx-auto">
@@ -91,8 +129,8 @@ const RegionCodeAdminSuper = () => {
           <h1 className="font-semibold text-3xl">Kode Wilayah</h1>
           <div className="flex items-center gap-8">
             <SearchOrder
-              onSubmit={async () => {}}
-              setKeyword={() => {}}
+              onSubmit={handleSearchUserOrders}
+              setKeyword={setKeyword}
               placeholder="Cari kode wilayah"
               className="ring-0 flex-1"
             />
@@ -168,7 +206,7 @@ const RegionCodeAdminSuper = () => {
           <Dialog open={isOpenDetailRegionCode} onOpenChange={setIsOpenDetailRegionCode}>
             <DialogContent className="sm:max-w-[525px]">
               <DialogTitle className="text-xl font-semibold">Edit kode wilayah</DialogTitle>
-              <form onSubmit={onSubmitAddRegion} className="space-y-2">
+              <form onSubmit={onsubmitUpdateRegionCode} className="space-y-2">
                 {FORM_REGION_CODE.map((form) => (
                   <div key={form.label} className="space-y-1">
                     {form.label !== "Nama admin perwakilan" ? (

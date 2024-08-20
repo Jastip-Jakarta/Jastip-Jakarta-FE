@@ -104,6 +104,15 @@ export const updateOrder = async (orderId: string, body: IOrderType) => {
     throw Error(error.response.data.message);
   }
 };
+
+export const updateOrderByAdminSuper = async (orderId: string, body: IOrderType) => {
+  try {
+    const response = await axiosWithConfig.put("/admin/order/" + orderId, body);
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
 export const updateOrderByAdminJakarta = async (orderId: string, body: IOrderAdminJakartaType) => {
   try {
     const response = await axiosWithConfig.post("/admin/order/" + orderId, body);

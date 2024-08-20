@@ -86,7 +86,7 @@ const ContainerCustomerOrders = ({ data, backAction, onClickSelengkapnya }: Cont
         ) : null}
 
         <div className="flex flex-col gap-3 w-full">
-          {data?.orders.map((order) => (
+          {data?.orders?.map((order) => (
             <Card
               key={order.order_id}
               orderProcess={order}

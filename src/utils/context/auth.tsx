@@ -24,7 +24,6 @@ const AuthContext = createContext(initialState);
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") ?? "");
   const [user, setUser] = useState<Partial<IUser>>({});
-
   useEffect(() => {
     setAxiosConfig(token);
     token !== "" && fetchUser();
@@ -34,7 +33,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     (res) => res,
     (error) => {
       if (error.response.status === 401) {
-        alert("Silahkan Login kembali");
+        window.location.href = "/";
         changeToken("");
       }
       return Promise.reject(error);
