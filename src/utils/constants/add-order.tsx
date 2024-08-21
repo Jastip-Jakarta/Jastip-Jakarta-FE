@@ -129,7 +129,7 @@ export const FORM_REGION_CODE = [
 ];
 export const FORM_ADD_USER = [
   {
-    label: "Nama user",
+    label: "Nama Pengguna",
     formName: "name",
     placeholder: "Ami citayam",
   },
@@ -140,7 +140,12 @@ export const FORM_ADD_USER = [
   },
   {
     label: "Nomor telepon whatsapp",
-    formName: "phone_number",
+    formName: "phone",
     placeholder: "628xxxxxxx",
+  },
+  {
+    label: "Kata sandi",
+    formName: "password",
+    placeholder: "Masukkan kata sandi",
   },
 ];

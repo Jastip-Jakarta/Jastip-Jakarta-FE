@@ -169,6 +169,7 @@ const OrdersAdminS = () => {
       }
       const result = await searchUserOrdersByAdmin(keyword);
       // setResultOrdersSearch(result.data);
+      console.log(result.data);
       if (!result.data) {
         toast.error("Titipan tidak ditemukan!");
       }

@@ -26,3 +26,11 @@ export interface IAdmin {
   create_account: string;
   last_update: string;
 }
+
+export interface IUserForAdminSuper {
+  id: number;
+  name: string;
+  email: string;
+  phone_number: number;
+  photo_profile: string;
+}

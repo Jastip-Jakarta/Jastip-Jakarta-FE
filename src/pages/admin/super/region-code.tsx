@@ -38,6 +38,11 @@ const RegionCodeAdminSuper = () => {
     fetchRegions();
     fetchAdminPerwakilan();
   }, []);
+  useEffect(() => {
+    if (keyword.length < 1) {
+      fetchRegions();
+    }
+  }, [keyword]);
 
   const {
     register,
@@ -98,7 +103,8 @@ const RegionCodeAdminSuper = () => {
       const result = await updateRegionCode(codeToUpdateRegionCode!, body);
       toast.success(result.message);
       reset();
-      setIsOpenAddRegionCode(false);
+      setIsOpenDetailRegionCode(false);
+
       fetchRegions();
     } catch (error: any) {
       toast.error(error.message);
@@ -107,17 +113,12 @@ const RegionCodeAdminSuper = () => {
   const handleSearchUserOrders = async (e: any) => {
     e.preventDefault();
     try {
-      if (keyword === "") {
-        // setResultOrdersSearch(null);
-        location.reload();
+      if (!keyword.length) {
+        toast.error("Ketikkan nama pengguna");
         return;
       }
       const result = await searchRegionCodeByAdminSuper(keyword);
       setRegions(result.data as any);
-      if (!result.data) {
-        toast.error("Kode wilayah tidak ditemukan!");
-        fetchRegions();
-      }
     } catch (error: any) {
       toast.error(error.message);
     }

@@ -1,7 +1,8 @@
 import { Response } from "@/utils/types/api";
 import axiosWithConfig from "../axios-with-config";
-import { IAdmin, UploadImgPayload } from "./types";
+import { IAdmin, IUserForAdminSuper, UploadImgPayload } from "./types";
 import { IOrders } from "../order/types";
+import { IRegisterType } from "../auth/types";
 
 export const getProfileAdmin = async () => {
   try {
@@ -11,7 +12,38 @@ export const getProfileAdmin = async () => {
     throw Error(error.response.data.message);
   }
 };
+export const getUsersForAdminSuper = async () => {
+  try {
+    const response = await axiosWithConfig.get("/admin/user");
 
+    return response.data as Response<IUserForAdminSuper[]>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const addNewUserByAdminSuper = async (body: IRegisterType) => {
+  try {
+    const response = await axiosWithConfig.post("/admin/user", {
+      name: body.name,
+      email: body.email,
+      phone: +body.phone,
+      password: body.password,
+    });
+    return response.data as Response<{}>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
+
+export const searchUserForAdmin = async (keyword: string) => {
+  try {
+    const response = await axiosWithConfig.get(`/admin/user/search?name=${keyword}`);
+    return response.data as Response<IUserForAdminSuper[]>;
+  } catch (error: any) {
+    throw Error(error.response.data.message);
+  }
+};
 export const getOrdersByAdmin = async () => {
   try {
     const response = await axiosWithConfig.get("/admin/order");

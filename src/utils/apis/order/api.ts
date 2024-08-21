@@ -29,7 +29,7 @@ export const searchUserOrders = async (keyword: string) => {
 };
 export const searchUserOrdersByAdmin = async (keyword: string) => {
   try {
-    const response = await axiosWithConfig.get(`/admin/order/search?item_name=${keyword}`);
+    const response = await axiosWithConfig.get(`/admin/order/search?jastip=${keyword}`);
     return response.data as Response<IOrders[]>;
   } catch (error: any) {
     throw Error(error.response.data.message);

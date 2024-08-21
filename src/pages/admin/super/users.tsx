@@ -5,35 +5,104 @@ import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FORM_ADD_USER } from "@/utils/constants/add-order";
-import axios from "axios";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { DataTable } from "@/components/DataTable";
+import { ColumnDef, ColumnVisibility } from "@tanstack/react-table";
+import { IUserForAdminSuper } from "@/utils/apis/admin/types";
+import { addNewUserByAdminSuper, getUsersForAdminSuper, searchUserForAdmin } from "@/utils/apis/admin/api";
+import defaultImg from "../../../../public/images/profilejpg.jpg";
+import { useForm } from "react-hook-form";
+import { IRegisterType } from "@/utils/apis/auth/types";
 
 const Users = () => {
-  const [users, setUsers] = useState<any[]>();
   const [keyword, setKeyword] = useState("");
+  const [users, setUsers] = useState<IUserForAdminSuper[]>();
   const [isOpenAddEditUser, setIsOpenAddEditUser] = useState(false);
-  const [paginate, setPaginate] = useState<any>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<IRegisterType>();
+
   useEffect(() => {
     getUsers();
   }, []);
 
+  useEffect(() => {
+    if (keyword.length < 1) {
+      getUsers();
+    }
+  }, [keyword]);
+
+  const onSubmitAddUser = handleSubmit(async (body: IRegisterType) => {
+    try {
+      const result = await addNewUserByAdminSuper(body);
+      setIsOpenAddEditUser(false);
+      getUsers();
+      toast.success(result.message);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  });
+
+  const columns: ColumnDef<IUserForAdminSuper>[] = [
+    {
+      id: "group",
+
+      header: ({ table }) => {
+        return (
+          <div className="text-sm text-muted-foreground rounded-md h-12 pr-8 text-left flex items-center justify-between">
+            <p>
+              Showing {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} users.
+            </p>
+          </div>
+        );
+      },
+
+      columns: [
+        {
+          accessorKey: "name",
+          header: "Nama",
+          cell: ({ row }) => {
+            const data = row.original;
+            return (
+              <div className="flex items-center gap-x-5">
+                <img
+                  src={defaultImg}
+                  alt="profile"
+                  width={36}
+                  height={36}
+                  className="rounded-full size-12 object-cover object-center"
+                />
+                <span className="font-semibold">{data.name}</span>
+              </div>
+            );
+          },
+        },
+        {
+          accessorKey: "email",
+          header: "Email",
+        },
+        {
+          accessorKey: "phone_number",
+          header: "Nomor Handphone",
+          cell: ({ row }) => {
+            const data = row.original;
+            return <div>{`+${data.phone_number}`}</div>;
+          },
+        },
+      ],
+    },
+  ];
+
   const getUsers = async () => {
     try {
-      const result = await axios.get("https://dummyjson.com/users");
-      setUsers([...result.data.users]);
-      setPaginate({ total: result.data.total, limit: result.data.limit, skip: result.data.skip });
+      const result = await getUsersForAdminSuper();
+      setUsers(result.data);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -42,9 +111,13 @@ const Users = () => {
   const searchUsers = async (e: any) => {
     e.preventDefault();
     try {
-      const result = await axios.get(`https://dummyjson.com/users/search?q=${keyword}`);
-      setUsers([...result.data.users]);
-      setPaginate({ total: result.data.total, limit: result.data.limit, skip: result.data.skip });
+      if (!keyword.length) {
+        toast.error("Ketikkan nama pengguna");
+        return;
+      }
+      const result = await searchUserForAdmin(keyword);
+
+      setUsers(result.data);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -71,64 +144,32 @@ const Users = () => {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[525px]">
                 <DialogTitle className="text-xl font-medium">Tambah user baru</DialogTitle>
-                <form onSubmit={() => {}} className="space-y-2">
+                <form onSubmit={onSubmitAddUser} className="space-y-2">
                   {FORM_ADD_USER.map((input) => (
                     <div className="space-y-1" key={input.label}>
                       <Label className="font-semibold">{input.label}</Label>
                       <Input
                         placeholder={input.placeholder}
-                        // {...register(input.formName as keyof typeof register)}
+                        {...register(input.formName as keyof typeof register)}
                       />
-                      {/* {errors?.[input.formName as keyof typeof errors] ? (
+                      {errors?.[input.formName as keyof typeof errors] ? (
                         <p className="text-sm text-red-500 -mt-2">
                           {errors?.[input.formName as keyof typeof errors]?.message?.toString()}
                         </p>
-                      ) : null} */}
+                      ) : null}
                     </div>
                   ))}
                   <DialogFooter className="mt-5">
-                    <Button type="submit" /* disabled={isSubmitting} */>Simpan</Button>
+                    <Button type="submit" disabled={isSubmitting}>
+                      Simpan
+                    </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
           </div>
         </div>
-        <Table className="bg-slate-100 rounded-lg">
-          <TableCaption>Daftar pengguna JASTIP.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">No</TableHead>
-              <TableHead>Nama</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>phone</TableHead>
-              {/* <TableHead className="text-right">phone</TableHead> */}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users?.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.id}</TableCell>
-                <TableCell>{user.firstName}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell className="text-right">{user.totalAmemailount}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>
-                {Math.floor(2 / (paginate?.total / paginate?.limit))} of{" "}
-                {Math.floor(paginate?.total / paginate?.limit)} row(s) selected.
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={3}>Jumlah user</TableCell>
-              <TableCell className="text-right">{paginate?.total?.toString()}</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
+        <DataTable data={users ?? []} columns={columns} />
         {/* <div className="space-y-3">
           {users?.map((user: any) => (
             <div key={user.id} className="bg-white px-3 py-4 rounded-md">
