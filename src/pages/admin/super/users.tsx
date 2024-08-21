@@ -9,12 +9,13 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { DataTable } from "@/components/DataTable";
-import { ColumnDef, ColumnVisibility } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { IUserForAdminSuper } from "@/utils/apis/admin/types";
 import { addNewUserByAdminSuper, getUsersForAdminSuper, searchUserForAdmin } from "@/utils/apis/admin/api";
 import defaultImg from "../../../../public/images/profilejpg.jpg";
 import { useForm } from "react-hook-form";
-import { IRegisterType } from "@/utils/apis/auth/types";
+import { IRegisterType, RegisterSchema } from "@/utils/apis/auth/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const Users = () => {
   const [keyword, setKeyword] = useState("");
@@ -25,7 +26,9 @@ const Users = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<IRegisterType>();
+  } = useForm<IRegisterType>({
+    resolver: zodResolver(RegisterSchema),
+  });
 
   useEffect(() => {
     getUsers();

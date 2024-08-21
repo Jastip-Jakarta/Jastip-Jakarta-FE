@@ -9,7 +9,7 @@ import { BatchPayload, batchSchema, IBatch } from "@/utils/apis/batch/types";
 import { FORM_ADD_BATCH } from "@/utils/constants/add-order";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 const DeliveryBatchAdminSuper = () => {
   const [batchs, setBatchs] = useState<IBatch[]>();
   const [isOpenAddBatch, setIsOpenAddBatch] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -30,11 +30,14 @@ const DeliveryBatchAdminSuper = () => {
   }, []);
 
   const getBatchs = async () => {
+    setIsLoading(true);
     try {
       const result = await getBatch();
       setBatchs(result.data);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,10 +99,17 @@ const DeliveryBatchAdminSuper = () => {
             </DialogContent>
           </Dialog>
         </div>
-        <div className="grid grid-cols-2 gap-6">
-          {batchs?.map((batch) => (
-            <CardDeliveryBatch batch={batch} key={batch.batch} onDownload={onDownloadCsv} />
-          ))}
+        <div className="relative grid grid-cols-2 gap-6">
+          {isLoading ? (
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center flex-col gap-1">
+              <LoaderCircle className="animate-spin" />
+              <span> Loading...</span>
+            </div>
+          ) : (
+            batchs?.map((batch) => (
+              <CardDeliveryBatch batch={batch} key={batch.batch} onDownload={onDownloadCsv} />
+            ))
+          )}
         </div>
       </div>
     </LayoutAdmin>

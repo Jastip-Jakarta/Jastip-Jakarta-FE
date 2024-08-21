@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,6 +30,7 @@ const RegionCodeAdminSuper = () => {
   const [keyword, setKeyword] = useState("");
   const [regions, setRegions] = useState<IRegion[]>();
   const [adminJId, setAdminJId] = useState<string | null>();
+  const [isLoadingGetRegions, setIsLoadingGetRegions] = useState(false);
   const [adminPerwakilans, setAdminPerwakilans] = useState<IAdmin[]>();
   const [isOpenAddRegionCode, setIsOpenAddRegionCode] = useState(false);
   const [isOpenDetailRegionCode, setIsOpenDetailRegionCode] = useState(false);
@@ -38,11 +39,18 @@ const RegionCodeAdminSuper = () => {
     fetchRegions();
     fetchAdminPerwakilan();
   }, []);
+
   useEffect(() => {
     if (keyword.length < 1) {
       fetchRegions();
     }
   }, [keyword]);
+
+  useEffect(() => {
+    if (!isOpenDetailRegionCode) {
+      reset();
+    }
+  }, [isOpenDetailRegionCode]);
 
   const {
     register,
@@ -61,11 +69,14 @@ const RegionCodeAdminSuper = () => {
     }
   };
   const fetchRegions = async () => {
+    setIsLoadingGetRegions(true);
     try {
       const result = await getRegions();
       setRegions(result.data);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoadingGetRegions(false);
     }
   };
 
@@ -82,6 +93,7 @@ const RegionCodeAdminSuper = () => {
   });
 
   const onOpenDetailRegion = async (code: string) => {
+    setIsLoadingGetRegions(true);
     setIsOpenDetailRegionCode(true);
     try {
       const result = await getRegion(code);
@@ -95,6 +107,8 @@ const RegionCodeAdminSuper = () => {
       setCodeToUpdateRegionCode(result.data.code);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoadingGetRegions(false);
     }
   };
 
@@ -104,7 +118,6 @@ const RegionCodeAdminSuper = () => {
       toast.success(result.message);
       reset();
       setIsOpenDetailRegionCode(false);
-
       fetchRegions();
     } catch (error: any) {
       toast.error(error.message);
@@ -196,64 +209,77 @@ const RegionCodeAdminSuper = () => {
             </Dialog>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-6">
-          {regions?.map((region, index) => (
-            <CardRegionCodeAdmin
-              region={region}
-              key={index}
-              onClick={() => onOpenDetailRegion(region.code)}
-            />
-          ))}
+        <div className="grid grid-cols-2 gap-6 relative">
+          {isLoadingGetRegions ? (
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center flex-col gap-1">
+              <LoaderCircle className="animate-spin" />
+              <span> Loading...</span>
+            </div>
+          ) : (
+            regions?.map((region, index) => (
+              <CardRegionCodeAdmin
+                region={region}
+                key={index}
+                onClick={() => onOpenDetailRegion(region.code)}
+              />
+            ))
+          )}
           <Dialog open={isOpenDetailRegionCode} onOpenChange={setIsOpenDetailRegionCode}>
             <DialogContent className="sm:max-w-[525px]">
               <DialogTitle className="text-xl font-semibold">Edit kode wilayah</DialogTitle>
-              <form onSubmit={onsubmitUpdateRegionCode} className="space-y-2">
-                {FORM_REGION_CODE.map((form) => (
-                  <div key={form.label} className="space-y-1">
-                    {form.label !== "Nama admin perwakilan" ? (
-                      <>
-                        <Label>{form.label}</Label>
-                        <Input
-                          placeholder={form.placeholder}
-                          {...register(form.formName as any)}
-                          disabled={user.role === "Perwakilan"}
-                        />
-                        {errors?.[form.formName as keyof typeof errors] ? (
-                          <p className="text-sm text-red-500 -mt-2">
-                            {errors?.[form.formName as keyof typeof errors]?.message?.toString()}
-                          </p>
-                        ) : null}
-                      </>
-                    ) : (
-                      <>
-                        <Label>{form.label}</Label>
-                        <Select onValueChange={(e) => setValue(form.formName as any, e)} value={adminJId!}>
-                          <SelectTrigger className="!ring-0">
-                            <SelectValue placeholder={form.placeholder} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {adminPerwakilans?.map((admin) => (
-                              <SelectItem key={admin.admin_id} value={`${admin.admin_id}`}>
-                                {admin.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {errors?.[form.formName as keyof typeof errors] ? (
-                          <p className="text-sm text-red-500 -mt-2">
-                            {errors?.[form.formName as keyof typeof errors]?.message}
-                          </p>
-                        ) : null}
-                      </>
-                    )}
-                  </div>
-                ))}
-                <DialogFooter className="mt-5">
-                  <Button type="submit" disabled={isSubmitting}>
-                    Simpan
-                  </Button>
-                </DialogFooter>
-              </form>
+              {isLoadingGetRegions ? (
+                <div className="w-full flex flex-col items-center justify-center gap-2">
+                  <LoaderCircle className="animate-spin" /> Loading...
+                </div>
+              ) : (
+                <form onSubmit={onsubmitUpdateRegionCode} className="space-y-2">
+                  {FORM_REGION_CODE.map((form) => (
+                    <div key={form.label} className="space-y-1">
+                      {form.label !== "Nama admin perwakilan" ? (
+                        <>
+                          <Label>{form.label}</Label>
+                          <Input
+                            placeholder={form.placeholder}
+                            {...register(form.formName as any)}
+                            disabled={user.role === "Perwakilan"}
+                          />
+                          {errors?.[form.formName as keyof typeof errors] ? (
+                            <p className="text-sm text-red-500 -mt-2">
+                              {errors?.[form.formName as keyof typeof errors]?.message?.toString()}
+                            </p>
+                          ) : null}
+                        </>
+                      ) : (
+                        <>
+                          <Label>{form.label}</Label>
+                          <Select onValueChange={(e) => setValue(form.formName as any, e)} value={adminJId!}>
+                            <SelectTrigger className="!ring-0">
+                              <SelectValue placeholder={form.placeholder} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {adminPerwakilans?.map((admin) => (
+                                <SelectItem key={admin.admin_id} value={`${admin.admin_id}`}>
+                                  {admin.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {errors?.[form.formName as keyof typeof errors] ? (
+                            <p className="text-sm text-red-500 -mt-2">
+                              {errors?.[form.formName as keyof typeof errors]?.message}
+                            </p>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                  <DialogFooter className="mt-5">
+                    <Button type="submit" disabled={isSubmitting}>
+                      Simpan
+                    </Button>
+                  </DialogFooter>
+                </form>
+              )}
             </DialogContent>
           </Dialog>
         </div>
